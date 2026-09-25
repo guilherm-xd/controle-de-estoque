@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Estoque</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<!--
+  GUIA RÁPIDO PARA O JAVASCRIPT (pode remover este comentário depois)
+
+  Formulário de cadastro:
+    #form-produto        -> ouvir o evento "submit"
+    #input-nome           #input-categoria
+    #input-quantidade      #input-preco
+
+  Lista de produtos:
+    #lista-produtos      -> <tbody> onde as linhas devem ser inseridas
+    #empty-state         -> mostrar/esconder quando a lista estiver vazia
+    Estrutura esperada de cada linha (repita para cada produto):
+      <tr data-id="ID_DO_PRODUTO">
+        <td>Nome</td>
+        <td>Categoria</td>
+        <td>Quantidade</td>
+        <td>R$ Preço</td>
+        <td><span class="badge badge-ok">Em estoque</span></td>   -> trocar para "badge-baixo" quando a quantidade for baixa
+        <td>
+          <button class="btn-icon" data-action="editar" data-id="ID_DO_PRODUTO">Editar</button>
+          <button class="btn-icon" data-action="remover" data-id="ID_DO_PRODUTO">Remover</button>
+        </td>
+      </tr>
+
+  Editar produto (modal no fim do <body>):
+    #modal-editar-overlay  -> tirar o atributo "hidden" para abrir, colocar de volta para fechar
+    #form-editar-produto   -> ouvir o evento "submit" para salvar
+    #editar-id             -> input hidden, usar para achar o produto (ex: com .map pelo id)
+    #editar-nome  #editar-categoria  #editar-quantidade  #editar-preco
+    #btn-cancelar-edicao   -> fecha o modal sem salvar
+    Sugestão de uso: ao clicar em "Editar" numa linha, preencher os campos do modal
+    com os dados daquele produto e abrir o overlay; no submit, atualizar o produto
+    (ex: array = array.map(p => p.id === id ? { ...p, preco: novoPreco } : p)) e fechar o modal.
+
+  Filtro por quantidade:
+    #filtro-qtd-min / #filtro-qtd-max  -> valores do intervalo
+    #btn-filtrar                        -> aplica o filtro
+    #btn-limpar-filtro                  -> limpa o filtro
+
+  Busca por nome:
+    #busca-produto
+
+  Indicadores no topo:
+    #stat-total-produtos   -> total de produtos cadastrados
+    #stat-total-itens      -> soma das quantidades
+    #stat-estoque-baixo    -> quantos produtos estão com estoque baixo
+
+  Título editável (precisa de JS):
+    #titulo-pagina         -> elemento <h1> com o nome
+    #btn-editar-titulo     -> botão do lápis; ao clicar, algo como:
+        titulo.contentEditable = true; titulo.focus();
+      e ao perder o foco (blur) ou apertar Enter, salvar e voltar contentEditable = false.
+
+  Personalizar cores (precisa de JS):
+    #btn-personalizar-tema -> abre #modal-tema-overlay (tirar o "hidden")
+    #cor-primaria  #cor-fundo  #cor-alerta  -> inputs type="color"
+    #btn-aplicar-tema      -> aplicar os valores nas variáveis CSS, ex:
+        document.documentElement.style.setProperty('--color-primary', corPrimaria.value)
+        document.documentElement.style.setProperty('--color-bg', corFundo.value)
+        document.documentElement.style.setProperty('--color-warn', corAlerta.value)
+    #btn-resetar-tema      -> remover os estilos inline para voltar ao padrão do CSS, ex:
+        document.documentElement.style.removeProperty('--color-primary') (repetir para as outras)
+-->
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">CE</span>
+      <div>
+        <p class="brand-name">Controle de Estoque</p>
+        <p class="brand-sub">Painel do administrador</p>
+      </div>
+    </div>
+
+    <div class="filter-panel">
+      <h2>Filtrar por quantidade</h2>
+      <div class="field">
+        <label for="filtro-qtd-min">Mínimo</label>
+        <input type="number" id="filtro-qtd-min" min="0" placeholder="0">
+      </div>
+      <div class="field">
+        <label for="filtro-qtd-max">Máximo</label>
+        <input type="number" id="filtro-qtd-max" min="0" placeholder="Sem limite">
+      </div>
+      <div class="filter-actions">
+        <button type="button" id="btn-filtrar" class="btn btn-primary">Aplicar filtro</button>
+        <button type="button" id="btn-limpar-filtro" class="btn btn-ghost">Limpar</button>
+      </div>
+
+      <div class="legend">
+        <h3>Legenda</h3>
+        <p><span class="badge badge-ok">Em estoque</span> quantidade acima do mínimo</p>
+        <p><span class="badge badge-baixo">Estoque baixo</span> quantidade próxima de zero</p>
+      </div>
+
+      <div class="theme-trigger">
+        <button type="button" class="btn btn-ghost" id="btn-personalizar-tema">Personalizar cores</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+
+    <header class="topbar">
+      <div>
+        <div class="title-row">
+          <h1 id="titulo-pagina">Estoque geral</h1>
+          <button type="button" class="icon-btn" id="btn-editar-titulo" aria-label="Editar título">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true">
+              <path d="M13.3 2.7l4 4L6.4 17.6H2.4v-4L13.3 2.7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <p class="subtitle">Cadastre produtos, acompanhe quantidades e filtre o que precisa de atenção.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total-produtos">0</span>
+          <span class="stat-label">Produtos cadastrados</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total-itens">0</span>
+          <span class="stat-label">Itens no estoque</span>
+        </div>
+        <div class="stat-card stat-alert">
+          <span class="stat-value" id="stat-estoque-baixo">0</span>
+          <span class="stat-label">Com estoque baixo</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="panel form-panel">
+      <h2>Adicionar produto</h2>
+      <form id="form-produto">
+        <div class="field">
+          <label for="input-nome">Nome do produto</label>
+          <input type="text" id="input-nome" name="nome" required placeholder="Ex: Caixa de parafusos">
+        </div>
+        <div class="field">
+          <label for="input-categoria">Categoria</label>
+          <input type="text" id="input-categoria" name="categoria" placeholder="Ex: Ferragens">
+        </div>
+        <div class="field field-small">
+          <label for="input-quantidade">Quantidade</label>
+          <input type="number" id="input-quantidade" name="quantidade" min="0" required placeholder="0">
+        </div>
+        <div class="field field-small">
+          <label for="input-preco">Preço (R$)</label>
+          <input type="number" id="input-preco" name="preco" min="0" step="0.01" placeholder="0,00">
+        </div>
+        <div class="field field-actions">
+          <button type="submit" class="btn btn-primary" id="btn-adicionar">Adicionar produto</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel list-panel">
+      <div class="list-header">
+        <h2>Produtos disponíveis</h2>
+        <input type="search" id="busca-produto" placeholder="Buscar por nome...">
+      </div>
+
+      <div class="table-wrap">
+        <table class="tabela-produtos">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th>Quantidade</th>
+              <th>Preço</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="lista-produtos">
+            <!-- As linhas de produtos entram aqui via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <p class="empty-state" id="empty-state">Nenhum produto cadastrado ainda. Adicione o primeiro produto acima.</p>
+    </section>
+
+  </main>
+</div>
+
+<div class="modal-overlay" id="modal-editar-overlay" hidden>
+  <div class="modal" role="dialog" aria-labelledby="modal-editar-titulo">
+    <h2 id="modal-editar-titulo">Editar produto</h2>
+    <form id="form-editar-produto">
+      <input type="hidden" id="editar-id" name="id">
+
+      <div class="field">
+        <label for="editar-nome">Nome do produto</label>
+        <input type="text" id="editar-nome" name="nome" required>
+      </div>
+      <div class="field">
+        <label for="editar-categoria">Categoria</label>
+        <input type="text" id="editar-categoria" name="categoria">
+      </div>
+      <div class="field-row">
+        <div class="field field-small">
+          <label for="editar-quantidade">Quantidade</label>
+          <input type="number" id="editar-quantidade" name="quantidade" min="0" required>
+        </div>
+        <div class="field field-small">
+          <label for="editar-preco">Preço (R$)</label>
+          <input type="number" id="editar-preco" name="preco" min="0" step="0.01" required>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost-light" id="btn-cancelar-edicao">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btn-salvar-edicao">Salvar alterações</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-tema-overlay" hidden>
+  <div class="modal" role="dialog" aria-labelledby="modal-tema-titulo">
+    <h2 id="modal-tema-titulo">Personalizar cores</h2>
+
+    <div class="field field-color">
+      <label for="cor-primaria">Cor principal (botões e destaques)</label>
+      <input type="color" id="cor-primaria" value="#1f5c4f">
+    </div>
+    <div class="field field-color">
+      <label for="cor-fundo">Cor de fundo</label>
+      <input type="color" id="cor-fundo" value="#f2f4f1">
+    </div>
+    <div class="field field-color">
+      <label for="cor-alerta">Cor de alerta (estoque baixo)</label>
+      <input type="color" id="cor-alerta" value="#8a5a1e">
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost-light" id="btn-resetar-tema">Restaurar padrão</button>
+      <button type="button" class="btn btn-primary" id="btn-aplicar-tema">Aplicar</button>
+    </div>
+  </div>
+</div>
+
+<script src="dashboard.js"></script>
+
+</body>
+</html>

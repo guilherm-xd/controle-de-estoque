@@ -47,9 +47,6 @@
             <button type="button" id="btn-limpar-filtro" class="btn btn-ghost">
               Limpar
             </button>
-            <button type="button" id="btn-so-baixo" class="btn btn-ghost">
-              Só estoque baixo
-            </button>
           </div>
 
           <div class="legend">
@@ -198,6 +195,9 @@
                 id="busca-produto"
                 placeholder="Buscar por nome..."
               />
+              <button type="button" id="btn-exportar" class="btn btn-ghost-light">
+                Exportar para Excel
+              </button>
               <div
                 class="view-toggle"
                 role="group"
@@ -324,10 +324,6 @@
         <div class="field field-color">
           <label for="cor-fundo">Cor de fundo</label>
           <input type="color" id="cor-fundo" value="#f2f4f1" />
-        </div>
-        <div class="field field-color">
-          <label for="cor-sidebar">Cor da barra lateral</label>
-          <input type="color" id="cor-sidebar" value="#1f5c4f" />
         </div>
         <div class="field field-color">
           <label for="cor-alerta">Cor de alerta (estoque baixo)</label>

@@ -14,7 +14,6 @@ const filtroQtdMin = document.getElementById('filtro-qtd-min');
 const filtroQtdMax = document.getElementById('filtro-qtd-max');
 const btnFiltrar = document.getElementById('btn-filtrar');
 const btnLimparFiltro = document.getElementById('btn-limpar-filtro');
-const btnSoBaixo = document.getElementById('btn-so-baixo');
 
 const buscaProduto = document.getElementById('busca-produto');
 
@@ -39,7 +38,6 @@ const btnPersonalizarTema = document.getElementById('btn-personalizar-tema');
 const modalTemaOverlay = document.getElementById('modal-tema-overlay');
 const corPrimaria = document.getElementById('cor-primaria');
 const corFundo = document.getElementById('cor-fundo');
-const corSidebar = document.getElementById('cor-sidebar');
 const corAlerta = document.getElementById('cor-alerta');
 const btnResetarTema = document.getElementById('btn-resetar-tema');
 const btnAplicarTema = document.getElementById('btn-aplicar-tema');
@@ -233,9 +231,69 @@ function removerProduto(id) {
   }
 
   idParaRemover = null;
+  const indice = produtos.findIndex(p => p.id === id);
+  ultimoRemovido = { produto: produtos[indice], indice, estoqueId: estoqueAtivoId };
   produtos = produtos.filter(p => p.id !== id);
   atualizarTela();
+  mostrarAvisoDesfazer();
 }
+
+let ultimoRemovido = null;
+let timerAviso;
+
+const aviso = document.createElement('div');
+aviso.className = 'aviso-desfazer';
+aviso.hidden = true;
+aviso.innerHTML = '<span></span><button type="button">Desfazer</button>';
+document.body.appendChild(aviso);
+
+function esconderAviso() {
+  clearTimeout(timerAviso);
+  aviso.hidden = true;
+}
+
+function mostrarAvisoDesfazer() {
+  aviso.querySelector('span').textContent = `"${ultimoRemovido.produto.nome}" removido`;
+  aviso.hidden = false;
+  clearTimeout(timerAviso);
+  timerAviso = setTimeout(esconderAviso, 6000);
+}
+
+aviso.querySelector('button').addEventListener('click', () => {
+  if (!ultimoRemovido) return;
+  const { produto, indice, estoqueId } = ultimoRemovido;
+  ultimoRemovido = null;
+  esconderAviso();
+  if (!estoques.some(e => e.id === estoqueId)) return;
+  if (estoqueId !== estoqueAtivoId) trocarEstoque(estoqueId);
+  produtos.splice(indice, 0, produto);
+  atualizarTela();
+});
+
+function escaparCsv(valor) {
+  const texto = String(valor);
+  return /[";\n]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
+}
+
+function exportarCsv() {
+  const cabecalho = ['Produto', 'Categoria', 'Quantidade', 'Preço (R$)', 'Status'];
+  const linhas = produtos.map(p => [
+    p.nome,
+    p.categoria,
+    p.quantidade,
+    p.preco.toFixed(2).replace('.', ','),
+    p.quantidade === 0 ? 'Sem estoque' : estoqueBaixo(p) ? 'Estoque baixo' : 'Em estoque'
+  ]);
+  const csv = [cabecalho, ...linhas].map(l => l.map(escaparCsv).join(';')).join('\r\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${estoqueAtivo().nome}.csv`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+document.getElementById('btn-exportar').addEventListener('click', exportarCsv);
 
 function abrirEdicao(id) {
   const produto = produtos.find(p => p.id === id);
@@ -298,12 +356,6 @@ btnLimparFiltro.addEventListener('click', () => {
   aplicarFiltro();
 });
 
-btnSoBaixo.addEventListener('click', () => {
-  filtroQtdMin.value = '';
-  filtroQtdMax.value = ESTOQUE_BAIXO - 1;
-  aplicarFiltro();
-});
-
 buscaProduto.addEventListener('input', () => {
   termoBusca = buscaProduto.value;
   renderizarLista();
@@ -361,7 +413,6 @@ function lerCorDoTema(variavel) {
 btnPersonalizarTema.addEventListener('click', () => {
   corPrimaria.value = lerCorDoTema('--color-primary');
   corFundo.value = lerCorDoTema('--color-bg');
-  corSidebar.value = lerCorDoTema('--color-sidebar') || lerCorDoTema('--color-primary-dark');
   corAlerta.value = lerCorDoTema('--color-warn');
   modalTemaOverlay.hidden = false;
 });
@@ -369,7 +420,7 @@ btnPersonalizarTema.addEventListener('click', () => {
 btnAplicarTema.addEventListener('click', () => {
   raiz.style.setProperty('--color-primary', corPrimaria.value);
   raiz.style.setProperty('--color-bg', corFundo.value);
-  raiz.style.setProperty('--color-sidebar', corSidebar.value);
+  raiz.style.setProperty('--color-sidebar', corPrimaria.value);
   raiz.style.setProperty('--color-warn', corAlerta.value);
   modalTemaOverlay.hidden = true;
 });
@@ -385,7 +436,6 @@ btnResetarTema.addEventListener('click', () => {
   resetarCores();
   corPrimaria.value = lerCorDoTema('--color-primary');
   corFundo.value = lerCorDoTema('--color-bg');
-  corSidebar.value = lerCorDoTema('--color-sidebar') || lerCorDoTema('--color-primary-dark');
   corAlerta.value = lerCorDoTema('--color-warn');
 });
 

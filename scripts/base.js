@@ -74,6 +74,9 @@ const opcoesAlvoDesconto = document.querySelectorAll(
   'input[name="alvoDesconto"]',
 );
 
+const boasVindas = document.getElementById("boasVindas");
+const botaoExemplo = document.getElementById("botaoExemplo");
+
 const ESTOQUE_BAIXO = 5;
 
 let produtos = [];
@@ -93,6 +96,54 @@ const idsMarcados = new Set();
 
 let termoBusca = "";
 let filtroAtual = { min: null, max: null };
+
+const toast = document.createElement("div");
+toast.className = "toast";
+toast.setAttribute("role", "status");
+toast.setAttribute("aria-live", "polite");
+document.body.appendChild(toast);
+let timerToast;
+
+function registrarHistorico(texto) {
+  const estoque = estoqueAtivo();
+  estoque.historico = estoque.historico || [];
+  estoque.historico.unshift({ texto, quando: Date.now() });
+  estoque.historico.length = Math.min(estoque.historico.length, 100);
+  salvarDados();
+}
+
+function mostrarToast(mensagem, guardar = true) {
+  if (guardar) registrarHistorico(mensagem);
+  toast.textContent = mensagem;
+  toast.classList.add("visivel");
+  clearTimeout(timerToast);
+  timerToast = setTimeout(() => toast.classList.remove("visivel"), 2600);
+}
+
+function reduzirMovimento() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function animarNumero(elemento, alvo, formatar = (n) => Math.round(n)) {
+  const de = Number(elemento.dataset.valor || 0);
+  elemento.dataset.valor = alvo;
+  cancelAnimationFrame(elemento.quadro);
+
+  if (de === alvo || reduzirMovimento()) {
+    elemento.textContent = formatar(alvo);
+    return;
+  }
+
+  const inicio = performance.now();
+  const duracao = 450;
+  const passo = (agora) => {
+    const t = Math.min(1, (agora - inicio) / duracao);
+    const suave = 1 - Math.pow(1 - t, 3);
+    elemento.textContent = formatar(t < 1 ? de + (alvo - de) * suave : alvo);
+    if (t < 1) elemento.quadro = requestAnimationFrame(passo);
+  };
+  elemento.quadro = requestAnimationFrame(passo);
+}
 
 function formatarPreco(valor) {
   return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });

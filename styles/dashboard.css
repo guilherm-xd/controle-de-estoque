@@ -1443,3 +1443,319 @@ th[data-dir="-1"]::after {
 .botaoFantasmaClaro[hidden] {
   display: none;
 }
+
+/* ---------- Toasts, boas-vindas e animações ---------- */
+.toast {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translate(-50%, -12px);
+  max-width: min(90vw, 460px);
+  padding: 10px 18px;
+  background: var(--corPrimaria);
+  color: var(--corSobrePrimaria, #ffffff);
+  border-radius: var(--raio);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 60;
+}
+
+.toast.visivel {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.boasVindas {
+  text-align: center;
+  padding: 36px 16px 20px;
+}
+
+.boasVindas h3 {
+  margin: 0 0 6px;
+}
+
+.boasVindas p {
+  margin: 0 0 16px;
+  color: var(--corTextoSuave);
+  font-size: 14px;
+}
+
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.entrada > tr {
+  animation: surgir 0.35s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.listaHistorico {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+  max-height: 50vh;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.listaHistorico li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--corBorda);
+}
+
+.listaHistorico time,
+.historicoVazio {
+  color: var(--corTextoSuave);
+  font-size: 12px;
+}
+
+/* ---------- Posição da barra lateral ---------- */
+.botaoQuadrado {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--barraBordaBotao);
+  background: transparent;
+  color: var(--barraTexto);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.botaoQuadrado:hover,
+.botaoQuadrado[aria-expanded="true"] {
+  background: var(--barraLinha);
+}
+
+.botaoQuadrado:focus-visible {
+  outline: 2px solid var(--barraFoco);
+  outline-offset: 2px;
+}
+
+.seletorPosicao {
+  position: absolute;
+  top: 22px;
+  right: 16px;
+  z-index: 20;
+}
+
+.marca {
+  padding-right: 44px;
+}
+
+.menuPosicao {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  width: 170px;
+  padding: 10px;
+  background: var(--corSuperficie);
+  color: var(--corTexto);
+  border: 1px solid var(--corBorda);
+  border-radius: var(--raio);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+.menuPosicao[hidden] {
+  display: none;
+}
+
+.opcaoPosicao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--fonteCorpo);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.opcaoPosicao:hover {
+  background: var(--corLinhaHover);
+}
+
+.opcaoPosicao[aria-pressed="true"] {
+  background: var(--corPrimariaSuave);
+  color: var(--corPrimariaTexto);
+  font-weight: 600;
+}
+
+.botaoFiltroCompacto {
+  display: none;
+}
+
+.painelFiltro {
+  position: relative;
+}
+
+/* direita (só em telas largas) */
+@media (min-width: 861px) {
+  .app[data-posicao="direita"] {
+    grid-template-columns: 1fr var(--larguraBarraLateral, 260px);
+  }
+  .app[data-posicao="direita"] .barraLateral {
+    grid-column: 2;
+    grid-row: 1;
+    border-right: 0;
+    border-left: 1px solid var(--corBorda);
+  }
+  .app[data-posicao="direita"] .conteudo {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .app[data-posicao="direita"] .redimensionador {
+    left: -4px;
+    right: auto;
+  }
+}
+
+/* topo e embaixo: barra compacta só com ícones */
+.app:is([data-posicao="topo"], [data-posicao="base"]) {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+.app[data-posicao="base"] {
+  grid-template-rows: 1fr auto;
+}
+
+.app[data-posicao="base"] .barraLateral {
+  grid-row: 2;
+  bottom: 0;
+}
+
+.app[data-posicao="base"] .conteudo {
+  grid-row: 1;
+}
+
+.app[data-posicao="topo"] .barraLateral {
+  top: 0;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .conteudo {
+  min-width: 0;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .barraLateral {
+  position: sticky;
+  z-index: 15;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border: 0;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .marca {
+  padding-right: 0;
+  margin-right: auto;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .marca > div,
+.app:is([data-posicao="topo"], [data-posicao="base"]) .redimensionador,
+.app:is([data-posicao="topo"], [data-posicao="base"]) .gatilhoTema label,
+.app:is([data-posicao="topo"], [data-posicao="base"]) .botaoTema #nomeTema,
+.app:is([data-posicao="topo"], [data-posicao="base"]) .botaoTema .setaTema {
+  display: none;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .seletorPosicao {
+  position: relative;
+  top: auto;
+  right: auto;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .painelFiltro {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .botaoFiltroCompacto {
+  display: inline-flex;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .gatilhoTema {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .gatilhoTema .botaoTema {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .amostraTema {
+  width: 18px;
+  height: 18px;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .menuTema {
+  left: auto;
+  right: 0;
+  width: 280px;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .gruposFiltro {
+  display: none;
+  position: absolute;
+  right: 0;
+  width: 260px;
+  padding: 16px;
+  background: var(--corBarraLateral, var(--corPrimariaEscura));
+  color: var(--barraTexto);
+  border: 1px solid var(--barraLinha);
+  border-radius: var(--raio);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  z-index: 20;
+}
+
+.app:is([data-posicao="topo"], [data-posicao="base"]) .painelFiltro.aberto .gruposFiltro {
+  display: block;
+}
+
+.app[data-posicao="topo"] .gruposFiltro,
+.app[data-posicao="topo"] .menuTema,
+.app[data-posicao="topo"] .menuPosicao {
+  top: calc(100% + 10px);
+}
+
+.app[data-posicao="base"] .gruposFiltro,
+.app[data-posicao="base"] .menuTema,
+.app[data-posicao="base"] .menuPosicao {
+  top: auto;
+  bottom: calc(100% + 10px);
+}

@@ -1,9 +1,10 @@
 formularioProduto.addEventListener('submit', evento => {
   evento.preventDefault();
 
+  const nomeNovo = campoNome.value.trim();
   produtos.push({
     id: proximoId++,
-    nome: campoNome.value.trim(),
+    nome: nomeNovo,
     categoria: campoCategoria.value.trim(),
     quantidade: Number(campoQuantidade.value),
     preco: Number(campoPreco.value) || 0
@@ -12,6 +13,7 @@ formularioProduto.addEventListener('submit', evento => {
   formularioProduto.reset();
   campoNome.focus();
   atualizarTela();
+  mostrarToast(`"${nomeNovo}" adicionado ao estoque`);
 });
 
 function removerProduto(id) {
@@ -32,6 +34,7 @@ function removerProduto(id) {
   ultimoRemovido = { produto: produtos[indice], indice, estoqueId: estoqueAtivoId };
   produtos = produtos.filter(p => p.id !== id);
   atualizarTela();
+  registrarHistorico(`"${ultimoRemovido.produto.nome}" removido`);
   mostrarAvisoDesfazer();
 }
 
@@ -65,6 +68,7 @@ aviso.querySelector('button').addEventListener('click', () => {
   if (estoqueId !== estoqueAtivoId) trocarEstoque(estoqueId);
   produtos.splice(indice, 0, produto);
   atualizarTela();
+  registrarHistorico(`"${produto.nome}" restaurado`);
 });
 
 function abrirEdicao(id) {
@@ -109,6 +113,7 @@ formularioEditarProduto.addEventListener('submit', evento => {
 
   fecharEdicao();
   atualizarTela();
+  mostrarToast('Produto atualizado');
 });
 
 botaoCancelarEdicao.addEventListener('click', fecharEdicao);
@@ -134,11 +139,14 @@ listaProdutos.addEventListener('click', evento => {
   if (botao.dataset.acao === 'tirarDesconto') {
     produtos = produtos.map(p => p.id === id ? tirarDesconto(p) : p);
     atualizarTela();
+    mostrarToast('Desconto removido');
   }
   if (botao.dataset.acao === 'mais' || botao.dataset.acao === 'menos') {
     const produto = produtos.find(p => p.id === id);
+    const antes = produto.quantidade;
     produto.quantidade = Math.max(0, produto.quantidade + (botao.dataset.acao === 'mais' ? 1 : -1));
     atualizarTela();
+    registrarHistorico(`${produto.nome}: quantidade ${antes} → ${produto.quantidade}`);
   }
 });
 
@@ -174,4 +182,27 @@ document.getElementById('botaoConfirmarTransferir').addEventListener('click', ()
   produtos = produtos.filter(p => p.id !== idTransferindo);
   modalTransferirFundo.hidden = true;
   atualizarTela();
+  mostrarToast(`"${produto.nome}" movido para ${destino.nome}`);
+});
+
+const EXEMPLOS = [
+  ['Caixa de parafusos', 'Ferragens', 42, 24.9],
+  ['Martelo 500g', 'Ferramentas', 3, 39.9],
+  ['Furadeira de impacto', 'Ferramentas', 8, 289],
+  ['Fita isolante', 'Elétrica', 2, 6.5],
+  ['Lâmpada LED 9W', 'Elétrica', 60, 12.9],
+  ['Tinta branca 3,6L', 'Pintura', 14, 118],
+  ['Rolo de pintura', 'Pintura', 0, 15.9],
+  ['Luva de proteção', 'Segurança', 25, 9.9],
+  ['Capacete', 'Segurança', 4, 34.5],
+  ['Trena 5m', 'Ferramentas', 19, 22]
+];
+
+botaoExemplo.addEventListener('click', () => {
+  EXEMPLOS.forEach(([nome, categoria, quantidade, preco]) => {
+    produtos.push({ id: proximoId++, nome, categoria, quantidade, preco });
+  });
+  atualizarTela();
+  animarEntrada();
+  mostrarToast(`${EXEMPLOS.length} produtos de exemplo carregados`);
 });

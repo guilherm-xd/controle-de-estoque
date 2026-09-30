@@ -62,6 +62,7 @@ function exportar() {
     baixarArquivo(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }), `${nomeArquivo}.csv`);
   }
   modalExportarFundo.hidden = true;
+  mostrarToast('Arquivo exportado', false);
 }
 
 document.getElementById('botaoExportar').addEventListener('click', () => {
@@ -174,6 +175,7 @@ async function importarArquivo(arquivo) {
 
   estoqueAtivoId = ultimoId;
   carregarEstoqueAtivo();
+  mostrarToast(nomes.length === 1 ? 'Estoque importado' : `${nomes.length} estoques importados`);
 }
 
 document.getElementById('botaoImportar').addEventListener('click', () => arquivoImportar.click());

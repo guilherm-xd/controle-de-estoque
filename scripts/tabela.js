@@ -171,17 +171,25 @@ function renderizarLista() {
 
   if (!barraDesconto.hidden) atualizarBarraDesconto();
 
-  estadoVazio.hidden = visiveis.length > 0;
-  estadoVazio.textContent = produtos.length === 0
-    ? 'Nenhum produto cadastrado ainda. Adicione o primeiro produto acima.'
-    : 'Nenhum produto encontrado com esses filtros.';
+  boasVindas.hidden = produtos.length > 0;
+  estadoVazio.hidden = visiveis.length > 0 || produtos.length === 0;
+}
+
+function animarEntrada() {
+  listaProdutos.classList.remove('entrada');
+  [...listaProdutos.children].forEach((tr, i) => {
+    tr.style.animationDelay = Math.min(i, 12) * 30 + 'ms';
+  });
+  void listaProdutos.offsetWidth;
+  listaProdutos.classList.add('entrada');
+  setTimeout(() => listaProdutos.classList.remove('entrada'), 900);
 }
 
 function atualizarIndicadores() {
-  estatisticaTotalProdutos.textContent = produtos.length;
-  estatisticaTotalItens.textContent = produtos.reduce((soma, p) => soma + p.quantidade, 0);
-  estatisticaEstoqueBaixo.textContent = produtos.filter(estoqueBaixo).length;
-  estatisticaValorTotal.textContent = formatarPreco(produtos.reduce((soma, p) => soma + p.quantidade * p.preco, 0));
+  animarNumero(estatisticaTotalProdutos, produtos.length);
+  animarNumero(estatisticaTotalItens, produtos.reduce((soma, p) => soma + p.quantidade, 0));
+  animarNumero(estatisticaEstoqueBaixo, produtos.filter(estoqueBaixo).length);
+  animarNumero(estatisticaValorTotal, produtos.reduce((soma, p) => soma + p.quantidade * p.preco, 0), formatarPreco);
   botaoDesfazerDescontos.hidden = !produtos.some(p => p.desconto);
 }
 

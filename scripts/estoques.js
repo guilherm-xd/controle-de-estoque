@@ -81,6 +81,7 @@ function carregarEstoqueAtivo() {
   desarmarExclusao();
   renderizarAbas();
   atualizarTela();
+  animarEntrada();
 }
 
 function trocarEstoque(id) {
@@ -100,8 +101,10 @@ function proximoNomeLivre() {
 
 function novoEstoque() {
   const id = proximoIdEstoque++;
-  estoques.push({ id, nome: proximoNomeLivre(), produtos: [], proximoId: 1 });
+  const nome = proximoNomeLivre();
+  estoques.push({ id, nome, produtos: [], proximoId: 1 });
   trocarEstoque(id);
+  mostrarToast(`"${nome}" criado`);
 }
 
 function excluirEstoque() {
@@ -119,6 +122,7 @@ function excluirEstoque() {
   estoques = estoques.filter(e => e.id !== estoqueAtivoId);
   estoqueAtivoId = estoques[Math.max(0, indice - 1)].id;
   carregarEstoqueAtivo();
+  mostrarToast('Estoque excluído', false);
 }
 
 abas.addEventListener('click', evento => {
@@ -148,7 +152,9 @@ redimensionador.addEventListener('pointerdown', evento => {
 });
 
 redimensionador.addEventListener('pointermove', evento => {
-  if (redimensionador.hasPointerCapture(evento.pointerId)) definirLargura(evento.clientX);
+  if (!redimensionador.hasPointerCapture(evento.pointerId)) return;
+  const naDireita = app.dataset.posicao === 'direita';
+  definirLargura(naDireita ? window.innerWidth - evento.clientX : evento.clientX);
 });
 
 redimensionador.addEventListener('pointerup', evento => {
@@ -159,8 +165,9 @@ redimensionador.addEventListener('pointerup', evento => {
 
 redimensionador.addEventListener('keydown', evento => {
   const atual = document.querySelector('.barraLateral').offsetWidth;
-  if (evento.key === 'ArrowRight') definirLargura(atual + 20);
-  if (evento.key === 'ArrowLeft') definirLargura(atual - 20);
+  const sentido = app.dataset.posicao === 'direita' ? -1 : 1;
+  if (evento.key === 'ArrowRight') definirLargura(atual + 20 * sentido);
+  if (evento.key === 'ArrowLeft') definirLargura(atual - 20 * sentido);
 });
 
 carregarDados();

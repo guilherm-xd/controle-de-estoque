@@ -85,6 +85,7 @@ function aplicarDesconto() {
     return;
   }
 
+  const afetados = produtos.filter(entraNoDesconto).length;
   produtos = produtos.map(p => {
     if (!entraNoDesconto(p)) return p;
     const base = p.precoOriginal ?? p.preco;
@@ -98,6 +99,7 @@ function aplicarDesconto() {
 
   reiniciarDesconto();
   atualizarTela();
+  mostrarToast(`Desconto de ${formatarPercentual(percentual)}% aplicado em ${afetados} ${afetados === 1 ? 'item' : 'itens'}`);
 }
 
 botaoDesconto.addEventListener('click', () => {
@@ -114,6 +116,7 @@ function tirarDesconto(produto) {
 botaoDesfazerDescontos.addEventListener('click', () => {
   produtos = produtos.map(tirarDesconto);
   atualizarTela();
+  mostrarToast('Todos os descontos foram removidos');
 });
 
 botaoCancelarDesconto.addEventListener('click', fecharBarraDesconto);

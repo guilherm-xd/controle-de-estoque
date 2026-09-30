@@ -45,6 +45,14 @@ const btnAplicarTema = document.getElementById('btn-aplicar-tema');
 const temaLink = document.getElementById('tema-link');
 const seletorTema = document.getElementById('seletor-tema');
 
+const statValorTotal = document.getElementById('stat-valor-total');
+const painelGrafico = document.getElementById('painel-grafico');
+const graficoCategorias = document.getElementById('grafico-categorias');
+const modalTransferirOverlay = document.getElementById('modal-transferir-overlay');
+const transferirDestino = document.getElementById('transferir-destino');
+const arquivoImportar = document.getElementById('arquivo-importar');
+const areaImpressao = document.getElementById('area-impressao');
+
 const abas = document.getElementById('abas');
 const btnExcluirEstoque = document.getElementById('btn-excluir-estoque');
 const app = document.querySelector('.app');
@@ -62,6 +70,9 @@ let estoqueAtivoId = 1;
 let proximoIdEstoque = 2;
 let excluindoEstoque = false;
 let timerExcluir;
+
+let ordem = { campo: null, dir: 1 };
+let idTransferindo = null;
 
 let termoBusca = '';
 let filtroAtual = { min: null, max: null };
@@ -83,10 +94,19 @@ function estoqueBaixo(produto) {
 function filtrarProdutos() {
   const termo = termoBusca.trim().toLowerCase();
 
-  return produtos
+  const lista = produtos
     .filter(p => p.nome.toLowerCase().includes(termo))
     .filter(p => filtroAtual.min === null || p.quantidade >= filtroAtual.min)
     .filter(p => filtroAtual.max === null || p.quantidade <= filtroAtual.max);
+
+  if (!ordem.campo) return lista;
+
+  return lista.sort((a, b) => {
+    const x = a[ordem.campo];
+    const y = b[ordem.campo];
+    const resultado = typeof x === 'string' ? x.localeCompare(y, 'pt-BR') : x - y;
+    return resultado * ordem.dir;
+  });
 }
 
 function criarCelula(texto) {
@@ -121,13 +141,52 @@ function criarBotaoRemover(id) {
   return botao;
 }
 
+const ICONE_TRANSFERIR = '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 7h13M12.5 3.5L16 7l-3.5 3.5M17 13H4M7.5 9.5L4 13l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function criarBotaoTransferir(id) {
+  const botao = document.createElement('button');
+  botao.className = 'btn-icon';
+  botao.innerHTML = ICONE_TRANSFERIR;
+  botao.dataset.tip = 'Mover para outro estoque';
+  botao.setAttribute('aria-label', 'Mover para outro estoque');
+  botao.dataset.action = 'transferir';
+  botao.dataset.id = id;
+  return botao;
+}
+
+function criarCelulaQuantidade(produto) {
+  const td = document.createElement('td');
+  const menos = document.createElement('button');
+  const mais = document.createElement('button');
+  const valor = document.createElement('span');
+
+  menos.className = 'qtd-btn';
+  menos.textContent = '−';
+  menos.dataset.action = 'menos';
+  menos.dataset.id = produto.id;
+  menos.disabled = produto.quantidade === 0;
+  menos.setAttribute('aria-label', 'Diminuir quantidade');
+
+  mais.className = 'qtd-btn';
+  mais.textContent = '+';
+  mais.dataset.action = 'mais';
+  mais.dataset.id = produto.id;
+  mais.setAttribute('aria-label', 'Aumentar quantidade');
+
+  valor.className = 'qtd-valor';
+  valor.textContent = produto.quantidade;
+
+  td.append(menos, valor, mais);
+  return td;
+}
+
 function criarLinha(produto) {
   const tr = document.createElement('tr');
   tr.dataset.id = produto.id;
 
   tr.appendChild(criarCelula(produto.nome));
   tr.appendChild(criarCelula(produto.categoria || '—'));
-  tr.appendChild(criarCelula(produto.quantidade));
+  tr.appendChild(criarCelulaQuantidade(produto));
   tr.appendChild(criarCelula(formatarPreco(produto.preco)));
 
   const tdStatus = document.createElement('td');
@@ -147,6 +206,7 @@ function criarLinha(produto) {
 
   const tdAcoes = document.createElement('td');
   tdAcoes.appendChild(criarBotaoEditar(produto.id));
+  if (estoques.length > 1) tdAcoes.appendChild(criarBotaoTransferir(produto.id));
   tdAcoes.appendChild(criarBotaoRemover(produto.id));
   tr.appendChild(tdAcoes);
 
@@ -169,6 +229,41 @@ function atualizarIndicadores() {
   statTotalProdutos.textContent = produtos.length;
   statTotalItens.textContent = produtos.reduce((soma, p) => soma + p.quantidade, 0);
   statEstoqueBaixo.textContent = produtos.filter(estoqueBaixo).length;
+  statValorTotal.textContent = formatarPreco(produtos.reduce((soma, p) => soma + p.quantidade * p.preco, 0));
+}
+
+function renderizarGrafico() {
+  const totais = produtos.reduce((acc, p) => {
+    const categoria = p.categoria || 'Sem categoria';
+    acc[categoria] = (acc[categoria] || 0) + p.quantidade;
+    return acc;
+  }, {});
+  const entradas = Object.entries(totais).sort((a, b) => b[1] - a[1]);
+  const maior = Math.max(1, ...entradas.map(e => e[1]));
+
+  painelGrafico.hidden = entradas.length === 0;
+  graficoCategorias.innerHTML = '';
+
+  entradas.forEach(([categoria, quantidade]) => {
+    const linha = document.createElement('div');
+    const nome = document.createElement('span');
+    const trilho = document.createElement('div');
+    const barra = document.createElement('div');
+    const valor = document.createElement('span');
+
+    linha.className = 'barra-linha';
+    nome.className = 'barra-nome';
+    nome.textContent = categoria;
+    trilho.className = 'barra-trilho';
+    barra.className = 'barra';
+    barra.style.width = (quantidade / maior) * 100 + '%';
+    valor.className = 'barra-valor';
+    valor.textContent = quantidade;
+
+    trilho.appendChild(barra);
+    linha.append(nome, trilho, valor);
+    graficoCategorias.appendChild(linha);
+  });
 }
 
 function salvarDados() {
@@ -197,6 +292,7 @@ function carregarDados() {
 function atualizarTela() {
   renderizarLista();
   atualizarIndicadores();
+  renderizarGrafico();
   salvarDados();
 }
 
@@ -389,6 +485,157 @@ listaProdutos.addEventListener('click', evento => {
   const id = Number(botao.dataset.id);
   if (botao.dataset.action === 'editar') abrirEdicao(id);
   if (botao.dataset.action === 'remover') removerProduto(id);
+  if (botao.dataset.action === 'transferir') abrirTransferencia(id);
+  if (botao.dataset.action === 'mais' || botao.dataset.action === 'menos') {
+    const produto = produtos.find(p => p.id === id);
+    produto.quantidade = Math.max(0, produto.quantidade + (botao.dataset.action === 'mais' ? 1 : -1));
+    atualizarTela();
+  }
+});
+
+document.querySelectorAll('th[data-campo]').forEach(th => {
+  th.addEventListener('click', () => {
+    const campo = th.dataset.campo;
+    ordem = { campo, dir: ordem.campo === campo ? -ordem.dir : 1 };
+    document.querySelectorAll('th[data-campo]').forEach(outro => delete outro.dataset.dir);
+    th.dataset.dir = ordem.dir;
+    renderizarLista();
+  });
+});
+
+function abrirTransferencia(id) {
+  idTransferindo = id;
+  transferirDestino.innerHTML = '';
+  estoques
+    .filter(e => e.id !== estoqueAtivoId)
+    .forEach(e => transferirDestino.appendChild(new Option(e.nome, e.id)));
+  modalTransferirOverlay.hidden = false;
+}
+
+document.getElementById('btn-cancelar-transferir').addEventListener('click', () => {
+  modalTransferirOverlay.hidden = true;
+});
+
+document.getElementById('btn-confirmar-transferir').addEventListener('click', () => {
+  const destino = estoques.find(e => e.id === Number(transferirDestino.value));
+  const produto = produtos.find(p => p.id === idTransferindo);
+  if (!destino || !produto) return;
+
+  destino.produtos.push({ ...produto, id: destino.proximoId++ });
+  produtos = produtos.filter(p => p.id !== idTransferindo);
+  modalTransferirOverlay.hidden = true;
+  atualizarTela();
+});
+
+function lerCsv(texto) {
+  const limpo = texto.replace(/^\ufeff/, '');
+  const separador = limpo.split('\n')[0].includes(';') ? ';' : ',';
+  const linhas = [];
+  let linha = [];
+  let campo = '';
+  let aspas = false;
+
+  for (let i = 0; i < limpo.length; i++) {
+    const c = limpo[i];
+    if (aspas) {
+      if (c === '"' && limpo[i + 1] === '"') { campo += '"'; i++; }
+      else if (c === '"') aspas = false;
+      else campo += c;
+    } else if (c === '"') aspas = true;
+    else if (c === separador) { linha.push(campo); campo = ''; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && limpo[i + 1] === '\n') i++;
+      linha.push(campo);
+      linhas.push(linha);
+      linha = [];
+      campo = '';
+    } else campo += c;
+  }
+  if (campo !== '' || linha.length) { linha.push(campo); linhas.push(linha); }
+  return linhas;
+}
+
+function agruparProdutos(linhas, nomePadrao) {
+  const cabecalho = linhas[0].map(c => String(c).trim().toLowerCase());
+  const col = texto => cabecalho.findIndex(c => c.startsWith(texto));
+  const i = { estoque: col('estoque'), nome: col('produto'), categoria: col('categoria'), quantidade: col('quantidade'), preco: col('preço') };
+  const grupos = {};
+
+  if (i.nome < 0 || i.quantidade < 0) return grupos;
+
+  linhas.slice(1)
+    .filter(l => String(l[i.nome] ?? '').trim() !== '')
+    .forEach(l => {
+      const nomeEstoque = i.estoque >= 0 ? String(l[i.estoque]).trim() || nomePadrao : nomePadrao;
+      if (!grupos[nomeEstoque]) grupos[nomeEstoque] = [];
+      grupos[nomeEstoque].push({
+        nome: String(l[i.nome]).trim(),
+        categoria: i.categoria >= 0 ? String(l[i.categoria] ?? '').trim() : '',
+        quantidade: Math.max(0, parseInt(l[i.quantidade]) || 0),
+        preco: parseFloat(String(l[i.preco] ?? 0).replace(',', '.')) || 0
+      });
+    });
+
+  return grupos;
+}
+
+async function importarArquivo(arquivo) {
+  const nomeBase = arquivo.name.replace(/\.[^.]+$/, '');
+  const grupos = {};
+
+  if (/\.xlsx?$/i.test(arquivo.name)) {
+    const livro = XLSX.read(await arquivo.arrayBuffer());
+    livro.SheetNames.forEach(nome => {
+      const linhas = XLSX.utils.sheet_to_json(livro.Sheets[nome], { header: 1 });
+      if (linhas.length) Object.assign(grupos, agruparProdutos(linhas, nome));
+    });
+  } else {
+    const linhas = lerCsv(await arquivo.text());
+    if (linhas.length) Object.assign(grupos, agruparProdutos(linhas, nomeBase));
+  }
+
+  const nomes = Object.keys(grupos);
+  if (nomes.length === 0) {
+    alert('Não encontrei as colunas Produto e Quantidade no arquivo.');
+    return;
+  }
+
+  estoqueAtivo().produtos = produtos;
+  estoqueAtivo().proximoId = proximoId;
+
+  let ultimoId;
+  nomes.forEach(nome => {
+    ultimoId = proximoIdEstoque++;
+    estoques.push({
+      id: ultimoId,
+      nome,
+      produtos: grupos[nome].map((p, indice) => ({ ...p, id: indice + 1 })),
+      proximoId: grupos[nome].length + 1
+    });
+  });
+
+  estoqueAtivoId = ultimoId;
+  carregarEstoqueAtivo();
+}
+
+document.getElementById('btn-importar').addEventListener('click', () => arquivoImportar.click());
+
+arquivoImportar.addEventListener('change', () => {
+  if (arquivoImportar.files[0]) importarArquivo(arquivoImportar.files[0]);
+  arquivoImportar.value = '';
+});
+
+document.getElementById('btn-reposicao').addEventListener('click', () => {
+  const faltando = produtos.filter(estoqueBaixo).sort((a, b) => a.quantidade - b.quantidade);
+  const linhas = faltando.map(p => `<tr><td>${p.nome.replace(/</g, '&lt;')}</td><td>${(p.categoria || '—').replace(/</g, '&lt;')}</td><td>${p.quantidade}</td><td></td></tr>`).join('');
+
+  areaImpressao.innerHTML = `
+    <h1>Lista de reposição</h1>
+    <p>${estoqueAtivo().nome.replace(/</g, '&lt;')} — ${new Date().toLocaleDateString('pt-BR')}</p>
+    ${faltando.length === 0
+      ? '<p>Nenhum item com estoque baixo.</p>'
+      : `<table><thead><tr><th>Produto</th><th>Categoria</th><th>Em estoque</th><th>Quantidade a pedir</th></tr></thead><tbody>${linhas}</tbody></table>`}`;
+  window.print();
 });
 
 

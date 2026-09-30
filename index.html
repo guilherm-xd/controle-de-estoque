@@ -92,7 +92,7 @@
                 type="button"
                 class="icon-btn"
                 id="btn-editar-titulo"
-                aria-label="Editar título" data-tip="Renomear estoque"
+                aria-label="Editar título"
               >
                 <svg
                   viewBox="0 0 20 20"
@@ -110,7 +110,7 @@
                   />
                 </svg>
               </button>
-              <button type="button" class="icon-btn perigo" id="btn-excluir-estoque" data-tip="Excluir estoque (clique 2x)" aria-label="Excluir este estoque" hidden><svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8.5 8.5v5M11.5 8.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" class="icon-btn perigo" id="btn-excluir-estoque" title="Excluir este estoque (clique duas vezes)" aria-label="Excluir este estoque" hidden><svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8.5 8.5v5M11.5 8.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
             <p class="subtitle">
               Cadastre produtos, acompanhe quantidades e filtre o que precisa de
@@ -313,30 +313,6 @@
       </div>
     </div>
 
-    <div class="modal-overlay" id="modal-exportar-overlay" hidden>
-      <div class="modal" role="dialog" aria-labelledby="modal-exportar-titulo">
-        <h2 id="modal-exportar-titulo">Exportar estoque</h2>
-        <div class="field">
-          <label for="exportar-formato">Formato</label>
-          <select id="exportar-formato">
-            <option value="xlsx">Excel (.xlsx)</option>
-            <option value="csv">CSV (.csv)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="exportar-escopo">O que exportar</label>
-          <select id="exportar-escopo">
-            <option value="ativo">Só o estoque selecionado</option>
-            <option value="todos">Todos os estoques</option>
-          </select>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="btn btn-ghost-light" id="btn-cancelar-exportar">Cancelar</button>
-          <button type="button" class="btn btn-primary" id="btn-confirmar-exportar">Exportar</button>
-        </div>
-      </div>
-    </div>
-
     <div class="modal-overlay" id="modal-tema-overlay" hidden>
       <div class="modal" role="dialog" aria-labelledby="modal-tema-titulo">
         <h2 id="modal-tema-titulo">Personalizar cores</h2>
@@ -369,7 +345,6 @@
       </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="scripts/script.js"></script>
   </body>
 </html>

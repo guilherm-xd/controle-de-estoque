@@ -967,34 +967,3 @@ h3 {
   cursor: pointer;
   text-decoration: underline;
 }
-
-.icon-btn[data-tip] {
-  position: relative;
-}
-
-.icon-btn[data-tip]::after {
-  content: attr(data-tip);
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: 140px;
-  text-align: center;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: var(--color-ink);
-  color: var(--color-surface);
-  font-size: 12px;
-  font-weight: 500;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.12s;
-  z-index: 3;
-}
-
-.icon-btn[data-tip]:hover::after,
-.icon-btn[data-tip]:focus-visible::after,
-.icon-btn.perigo.armado::after {
-  opacity: 1;
-}

@@ -34,16 +34,6 @@ const btnSalvarEdicao = document.getElementById('btn-salvar-edicao');
 const tituloPagina = document.getElementById('titulo-pagina');
 const btnEditarTitulo = document.getElementById('btn-editar-titulo');
 
-const btnPersonalizarTema = document.getElementById('btn-personalizar-tema');
-const modalTemaOverlay = document.getElementById('modal-tema-overlay');
-const corPrimaria = document.getElementById('cor-primaria');
-const corFundo = document.getElementById('cor-fundo');
-const corAlerta = document.getElementById('cor-alerta');
-const btnResetarTema = document.getElementById('btn-resetar-tema');
-const btnAplicarTema = document.getElementById('btn-aplicar-tema');
-
-const temaLink = document.getElementById('tema-link');
-const seletorTema = document.getElementById('seletor-tema');
 
 const statValorTotal = document.getElementById('stat-valor-total');
 const painelGrafico = document.getElementById('painel-grafico');
@@ -76,10 +66,6 @@ let idTransferindo = null;
 
 let termoBusca = '';
 let filtroAtual = { min: null, max: null };
-
-const VISOES = ['detalhes', 'grade', 'compacta'];
-const COR_HEX = /^#[0-9a-f]{6}$/i;
-let preferencias = { visao: 'detalhes', largura: null, cores: null };
 
 
 function formatarPreco(valor) {
@@ -270,120 +256,27 @@ function renderizarGrafico() {
   });
 }
 
-function lerStorage(chave) {
-  try {
-    return localStorage.getItem(chave);
-  } catch (erro) {
-    return null;
-  }
-}
-
-function gravarStorage(chave, valor) {
-  try {
-    localStorage.setItem(chave, valor);
-  } catch (erro) {}
-}
-
-function removerStorage(chave) {
-  try {
-    localStorage.removeItem(chave);
-  } catch (erro) {}
-}
-
-function normalizarProduto(produto) {
-  if (!produto || typeof produto.nome !== 'string') return null;
-
-  return {
-    nome: produto.nome,
-    categoria: typeof produto.categoria === 'string' ? produto.categoria : '',
-    quantidade: Math.max(0, Number(produto.quantidade) || 0),
-    preco: Math.max(0, Number(produto.preco) || 0)
-  };
-}
-
-function normalizarDados(dados) {
-  if (!dados || !Array.isArray(dados.estoques)) return null;
-
-  const validos = dados.estoques.filter(e => e && typeof e.nome === 'string' && Array.isArray(e.produtos));
-  if (validos.length === 0) return null;
-
-  const lista = validos.map((e, i) => {
-    const itens = e.produtos
-      .map(normalizarProduto)
-      .filter(Boolean)
-      .map((p, j) => ({ id: j + 1, ...p }));
-
-    return {
-      id: i + 1,
-      nome: e.nome.trim() || `Estoque ${i + 1}`,
-      produtos: itens,
-      proximoId: itens.length + 1
-    };
-  });
-
-  const indiceAtivo = validos.findIndex(e => e.id === dados.estoqueAtivoId);
-
-  return {
-    estoques: lista,
-    estoqueAtivoId: indiceAtivo === -1 ? 1 : indiceAtivo + 1,
-    proximoIdEstoque: lista.length + 1
-  };
-}
-
 function salvarDados() {
   const atual = estoqueAtivo();
-  if (!atual) return;
-
   atual.produtos = produtos;
   atual.proximoId = proximoId;
 
-  gravarStorage('estoques', JSON.stringify({ estoques, estoqueAtivoId, proximoIdEstoque }));
+  localStorage.setItem('estoques', JSON.stringify({ estoques, estoqueAtivoId, proximoIdEstoque }));
 }
 
 function carregarDados() {
-  const bruto = lerStorage('estoques');
-  if (!bruto) return;
-
-  let dados = null;
   try {
-    dados = normalizarDados(JSON.parse(bruto));
+    const salvo = JSON.parse(localStorage.getItem('estoques'));
+    if (!salvo || !Array.isArray(salvo.estoques) || salvo.estoques.length === 0) return;
+
+    estoques = salvo.estoques;
+    proximoIdEstoque = salvo.proximoIdEstoque;
+    estoqueAtivoId = estoques.some(e => e.id === salvo.estoqueAtivoId)
+      ? salvo.estoqueAtivoId
+      : estoques[0].id;
   } catch (erro) {
-    dados = null;
+    localStorage.removeItem('estoques');
   }
-
-  if (!dados) {
-    removerStorage('estoques');
-    return;
-  }
-
-  estoques = dados.estoques;
-  estoqueAtivoId = dados.estoqueAtivoId;
-  proximoIdEstoque = dados.proximoIdEstoque;
-}
-
-function salvarPreferencias() {
-  gravarStorage('preferencias', JSON.stringify(preferencias));
-}
-
-function carregarPreferencias() {
-  try {
-    const salvo = JSON.parse(lerStorage('preferencias'));
-    if (!salvo || typeof salvo !== 'object') return;
-
-    if (VISOES.includes(salvo.visao)) preferencias.visao = salvo.visao;
-    if (Number.isFinite(salvo.largura)) preferencias.largura = salvo.largura;
-    if (salvo.cores && Object.keys(VARIAVEIS_COR).every(chave => COR_HEX.test(salvo.cores[chave]))) {
-      preferencias.cores = salvo.cores;
-    }
-  } catch (erro) {
-    removerStorage('preferencias');
-  }
-}
-
-function restaurarPreferencias() {
-  definirVisao(preferencias.visao);
-  if (preferencias.largura !== null) definirLargura(preferencias.largura);
-  if (preferencias.cores) aplicarCores(preferencias.cores);
 }
 
 function atualizarTela() {
@@ -468,25 +361,74 @@ function escaparCsv(valor) {
   return /[";\n]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
 }
 
-function exportarCsv() {
-  const cabecalho = ['Produto', 'Categoria', 'Quantidade', 'Preço (R$)', 'Status'];
-  const linhas = produtos.map(p => [
+const modalExportarOverlay = document.getElementById('modal-exportar-overlay');
+const exportarFormato = document.getElementById('exportar-formato');
+const exportarEscopo = document.getElementById('exportar-escopo');
+const CABECALHO = ['Produto', 'Categoria', 'Quantidade', 'Preço (R$)', 'Status'];
+
+function statusDoProduto(p) {
+  return p.quantidade === 0 ? 'Sem estoque' : estoqueBaixo(p) ? 'Estoque baixo' : 'Em estoque';
+}
+
+function linhasDe(lista, comoTexto) {
+  return lista.map(p => [
     p.nome,
     p.categoria,
     p.quantidade,
-    p.preco.toFixed(2).replace('.', ','),
-    p.quantidade === 0 ? 'Sem estoque' : estoqueBaixo(p) ? 'Estoque baixo' : 'Em estoque'
+    comoTexto ? p.preco.toFixed(2).replace('.', ',') : p.preco,
+    statusDoProduto(p)
   ]);
-  const csv = [cabecalho, ...linhas].map(l => l.map(escaparCsv).join(';')).join('\r\n');
-  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+}
+
+function nomeDeAba(nome, usados) {
+  const base = nome.replace(/[\[\]:*?\/\\]/g, ' ').trim().slice(0, 28) || 'Estoque';
+  let final = base;
+  let i = 2;
+  while (usados.includes(final)) final = `${base} ${i++}`;
+  usados.push(final);
+  return final;
+}
+
+function baixarArquivo(blob, nome) {
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${estoqueAtivo().nome}.csv`;
+  link.download = nome;
   link.click();
   URL.revokeObjectURL(link.href);
 }
 
-document.getElementById('btn-exportar').addEventListener('click', exportarCsv);
+function exportar() {
+  estoqueAtivo().produtos = produtos;
+  const todos = exportarEscopo.value === 'todos';
+  const lista = todos ? estoques : [estoqueAtivo()];
+  const nomeArquivo = todos ? 'Todos os estoques' : estoqueAtivo().nome;
+
+  if (exportarFormato.value === 'xlsx') {
+    const livro = XLSX.utils.book_new();
+    const usados = [];
+    lista.forEach(e => {
+      const planilha = XLSX.utils.aoa_to_sheet([CABECALHO, ...linhasDe(e.produtos, false)]);
+      XLSX.utils.book_append_sheet(livro, planilha, nomeDeAba(e.nome, usados));
+    });
+    XLSX.writeFile(livro, `${nomeArquivo}.xlsx`);
+  } else {
+    const linhas = todos
+      ? lista.flatMap(e => linhasDe(e.produtos, true).map(l => [e.nome, ...l]))
+      : linhasDe(lista[0].produtos, true);
+    const cabecalho = todos ? ['Estoque', ...CABECALHO] : CABECALHO;
+    const csv = [cabecalho, ...linhas].map(l => l.map(escaparCsv).join(';')).join('\r\n');
+    baixarArquivo(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }), `${nomeArquivo}.csv`);
+  }
+  modalExportarOverlay.hidden = true;
+}
+
+document.getElementById('btn-exportar').addEventListener('click', () => {
+  modalExportarOverlay.hidden = false;
+});
+document.getElementById('btn-cancelar-exportar').addEventListener('click', () => {
+  modalExportarOverlay.hidden = true;
+});
+document.getElementById('btn-confirmar-exportar').addEventListener('click', exportar);
 
 function abrirEdicao(id) {
   const produto = produtos.find(p => p.id === id);
@@ -705,16 +647,10 @@ buscaProduto.addEventListener('input', () => {
   renderizarLista();
 });
 
-function definirVisao(visao) {
-  painelLista.setAttribute('data-visao', visao);
-  botoesVisao.forEach(b => b.setAttribute('aria-pressed', b.dataset.visao === visao));
-}
-
 botoesVisao.forEach(botao => {
   botao.addEventListener('click', () => {
-    definirVisao(botao.dataset.visao);
-    preferencias.visao = botao.dataset.visao;
-    salvarPreferencias();
+    painelLista.setAttribute('data-visao', botao.dataset.visao);
+    botoesVisao.forEach(b => b.setAttribute('aria-pressed', b === botao));
   });
 });
 
@@ -754,87 +690,13 @@ tituloPagina.addEventListener('keydown', evento => {
 });
 
 
-const raiz = document.documentElement;
-
-const VARIAVEIS_COR = {
-  primaria: '--color-primary',
-  fundo: '--color-bg',
-  sidebar: '--color-sidebar',
-  alerta: '--color-warn'
-};
-
-function aplicarCores(cores) {
-  Object.entries(VARIAVEIS_COR).forEach(([chave, variavel]) => {
-    raiz.style.setProperty(variavel, cores[chave]);
-  });
-}
-
-function lerCorDoTema(variavel) {
-  return getComputedStyle(raiz).getPropertyValue(variavel).trim().toLowerCase();
-}
-
-btnPersonalizarTema.addEventListener('click', () => {
-  corPrimaria.value = lerCorDoTema('--color-primary');
-  corFundo.value = lerCorDoTema('--color-bg');
-  corAlerta.value = lerCorDoTema('--color-warn');
-  modalTemaOverlay.hidden = false;
-});
-
-btnAplicarTema.addEventListener('click', () => {
-  preferencias.cores = {
-    primaria: corPrimaria.value,
-    fundo: corFundo.value,
-    sidebar: corSidebar.value,
-    alerta: corAlerta.value
-  };
-  aplicarCores(preferencias.cores);
-  salvarPreferencias();
-  modalTemaOverlay.hidden = true;
-});
-
-function resetarCores() {
-  Object.values(VARIAVEIS_COR).forEach(variavel => raiz.style.removeProperty(variavel));
-}
-
-btnResetarTema.addEventListener('click', () => {
-  resetarCores();
-  preferencias.cores = null;
-  salvarPreferencias();
-  corPrimaria.value = lerCorDoTema('--color-primary');
-  corFundo.value = lerCorDoTema('--color-bg');
-  corAlerta.value = lerCorDoTema('--color-warn');
-});
-
-
-function aplicarTema(nome) {
-  temaLink.href = `tema-${nome}.css`;
-  resetarCores();
-  gravarStorage('tema-escolhido', nome);
-}
-
-seletorTema.addEventListener('change', () => {
-  aplicarTema(seletorTema.value);
-  preferencias.cores = null;
-  salvarPreferencias();
-});
-
-const temaSalvo = lerStorage('tema-escolhido');
-if (temaSalvo && [...seletorTema.options].some(o => o.value === temaSalvo)) {
-  seletorTema.value = temaSalvo;
-  aplicarTema(temaSalvo);
-}
-
-
-[modalEditarOverlay, modalTemaOverlay].forEach(overlay => {
-  overlay.addEventListener('click', evento => {
-    if (evento.target === overlay) overlay.hidden = true;
-  });
+modalEditarOverlay.addEventListener('click', evento => {
+  if (evento.target === modalEditarOverlay) modalEditarOverlay.hidden = true;
 });
 
 document.addEventListener('keydown', evento => {
   if (evento.key === 'Escape') {
     modalEditarOverlay.hidden = true;
-    modalTemaOverlay.hidden = true;
   }
 });
 
@@ -871,7 +733,7 @@ function desarmarExclusao() {
   clearTimeout(timerExcluir);
   excluindoEstoque = false;
   btnExcluirEstoque.classList.remove('armado');
-  btnExcluirEstoque.title = 'Excluir este estoque (clique duas vezes)';
+  btnExcluirEstoque.dataset.tip = 'Excluir este estoque (clique duas vezes)';
 }
 
 function carregarEstoqueAtivo() {
@@ -913,7 +775,7 @@ function excluirEstoque() {
   if (!excluindoEstoque) {
     excluindoEstoque = true;
     btnExcluirEstoque.classList.add('armado');
-    btnExcluirEstoque.title = 'Clique de novo para excluir este estoque';
+    btnExcluirEstoque.dataset.tip = 'Clique de novo para excluir este estoque';
     timerExcluir = setTimeout(desarmarExclusao, 3000);
     return;
   }
@@ -942,9 +804,7 @@ const LARGURA_MIN = 260;
 
 function definirLargura(px) {
   const maxima = Math.min(600, window.innerWidth * 0.5);
-  const largura = Math.max(LARGURA_MIN, Math.min(px, maxima));
-  app.style.setProperty('--sidebar-w', largura + 'px');
-  preferencias.largura = largura;
+  app.style.setProperty('--sidebar-w', Math.max(LARGURA_MIN, Math.min(px, maxima)) + 'px');
 }
 
 resizer.addEventListener('pointerdown', evento => {
@@ -961,19 +821,14 @@ resizer.addEventListener('pointerup', evento => {
   resizer.releasePointerCapture(evento.pointerId);
   resizer.classList.remove('arrastando');
   document.body.style.userSelect = '';
-  salvarPreferencias();
 });
 
 resizer.addEventListener('keydown', evento => {
-  if (evento.key !== 'ArrowRight' && evento.key !== 'ArrowLeft') return;
-
   const atual = document.querySelector('.sidebar').offsetWidth;
-  definirLargura(atual + (evento.key === 'ArrowRight' ? 20 : -20));
-  salvarPreferencias();
+  if (evento.key === 'ArrowRight') definirLargura(atual + 20);
+  if (evento.key === 'ArrowLeft') definirLargura(atual - 20);
 });
 
 
 carregarDados();
-carregarPreferencias();
-restaurarPreferencias();
 carregarEstoqueAtivo();

@@ -39,7 +39,7 @@
 }
 
 .sidebar {
-  background: linear-gradient(180deg, #3B34B8 0%, #2E2A78 100%);
+  background: linear-gradient(180deg, var(--sidebar-top, #3B34B8) 0%, var(--color-primary-dark) 100%);
 }
 
 .brand-mark {

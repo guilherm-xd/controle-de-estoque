@@ -13,6 +13,7 @@
     <link rel="icon" type="image/x-icon" href="icon.ico" />
     <link rel="stylesheet" href="dashboard.css" />
     <link rel="stylesheet" href="tema-classico.css" id="tema-link" />
+    <script src="scripts/paletas.js"></script>
   </head>
   <body>
     <div class="app">
@@ -49,20 +50,24 @@
             </button>
           </div>
 
-          <div class="theme-trigger">
-            <label for="seletor-tema">Tema da página</label>
-            <select id="seletor-tema">
-              <option value="classico">Clássico verde</option>
-              <option value="escuro">Escuro</option>
-              <option value="vibrante">Vibrante</option>
-            </select>
-            <button
-              type="button"
-              class="btn btn-ghost"
-              id="btn-personalizar-tema"
-            >
-              Personalizar cores
+          <div class="theme-trigger" id="seletor-tema">
+            <label>Tema da página</label>
+            <button type="button" class="btn btn-ghost btn-tema" id="btn-tema" aria-expanded="false">
+              <span class="amostra-tema" id="amostra-tema"></span>
+              <span id="nome-tema">Clássico verde</span>
+              <span class="seta-tema" aria-hidden="true">▾</span>
             </button>
+            <div class="menu-tema" id="menu-tema" hidden>
+              <p class="menu-titulo">Temas</p>
+              <div class="lista-temas" id="lista-temas"></div>
+              <p class="menu-titulo">Paletas de cor</p>
+              <div class="grupo-modo" id="grupo-modo">
+                <button type="button" class="opcao-modo" data-modo="claro">Claro</button>
+                <button type="button" class="opcao-modo" data-modo="escuro">Escuro</button>
+              </div>
+              <div class="grupo-cores" id="grupo-cores"></div>
+              <button type="button" class="btn-favoritar" id="btn-favoritar" hidden></button>
+            </div>
           </div>
         </div>
       <div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="Redimensionar barra lateral" tabindex="0"></div>
@@ -77,7 +82,7 @@
                 type="button"
                 class="icon-btn"
                 id="btn-editar-titulo"
-                aria-label="Editar título"
+                aria-label="Editar título" data-tip="Renomear estoque"
               >
                 <svg
                   viewBox="0 0 20 20"
@@ -95,7 +100,7 @@
                   />
                 </svg>
               </button>
-              <button type="button" class="icon-btn perigo" id="btn-excluir-estoque" title="Excluir este estoque (clique duas vezes)" aria-label="Excluir este estoque" hidden><svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8.5 8.5v5M11.5 8.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" class="icon-btn perigo" id="btn-excluir-estoque" data-tip="Excluir estoque (clique 2x)" aria-label="Excluir este estoque" hidden><svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8.5 8.5v5M11.5 8.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
             <p class="subtitle">
               Cadastre produtos, acompanhe quantidades e filtre o que precisa de
@@ -313,7 +318,6 @@
       </div>
     </div>
 
-<<<<<<< HEAD
     <div class="modal-overlay" id="modal-exportar-overlay" hidden>
       <div class="modal" role="dialog" aria-labelledby="modal-exportar-titulo">
         <h2 id="modal-exportar-titulo">Exportar estoque</h2>
@@ -352,46 +356,9 @@
       </div>
     </div>
 
-=======
->>>>>>> 791b80e084b14a0fceb3f807808844f5acfbecf1
-    <div class="modal-overlay" id="modal-tema-overlay" hidden>
-      <div class="modal" role="dialog" aria-labelledby="modal-tema-titulo">
-        <h2 id="modal-tema-titulo">Personalizar cores</h2>
-
-        <div class="field field-color">
-          <label for="cor-primaria">Cor principal (botões e destaques)</label>
-          <input type="color" id="cor-primaria" value="#1f5c4f" />
-        </div>
-        <div class="field field-color">
-          <label for="cor-fundo">Cor de fundo</label>
-          <input type="color" id="cor-fundo" value="#f2f4f1" />
-        </div>
-        <div class="field field-color">
-          <label for="cor-alerta">Cor de alerta (estoque baixo)</label>
-          <input type="color" id="cor-alerta" value="#8a5a1e" />
-        </div>
-
-        <div class="modal-actions">
-          <button
-            type="button"
-            class="btn btn-ghost-light"
-            id="btn-resetar-tema"
-          >
-            Restaurar padrão
-          </button>
-          <button type="button" class="btn btn-primary" id="btn-aplicar-tema">
-            Aplicar
-          </button>
-        </div>
-      </div>
-    </div>
-
-<<<<<<< HEAD
     <div id="area-impressao"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-=======
->>>>>>> 791b80e084b14a0fceb3f807808844f5acfbecf1
     <script src="scripts/script.js"></script>
   </body>
 </html>

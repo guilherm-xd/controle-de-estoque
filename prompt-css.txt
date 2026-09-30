@@ -1,0 +1,17 @@
+PROMPT USADO PARA GERAR OS TRÊS MODELOS DE CSS (mesmo prompt para os três)
+
+Você é um designer front-end. Crie três modelos de estilo (temas) diferentes para uma
+página de "Controle de Estoque de Mercado". O HTML já está pronto e não pode ser alterado.
+
+Regras:
+- Todos os temas usam as mesmas variáveis CSS (cores, fontes, raio de borda e sombra), definidas em :root.
+- Cada tema deve ser um arquivo separado: tema-classico.css, tema-escuro.css e tema-vibrante.css.
+- Os três precisam ter identidade visual claramente diferente entre si (paleta, tipografia, formato dos cantos).
+- Manter bom contraste de texto (legibilidade) em todos os temas.
+- Manter a barra lateral, os cartões de indicadores, a tabela, os selos de status
+  (em estoque / estoque baixo) e os botões coerentes com a paleta de cada tema.
+- Sem JavaScript e sem comentários no código.
+
+Entrega: os três arquivos CSS completos.
+
+IA utilizada: Claude (Anthropic)

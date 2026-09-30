@@ -1,0 +1,54 @@
+:root {
+  color-scheme: dark;
+
+  --color-bg: #0E1513;
+  --color-surface: #16211E;
+  --color-ink: #E5EEEA;
+  --color-ink-soft: #93A59E;
+  --color-border: #263531;
+  --color-field: #101A17;
+  --color-row-hover: #1B2925;
+
+  --color-primary: #2A8570;
+  --color-primary-dark: #0A211C;
+  --color-primary-hover: #1F6D5A;
+  --color-primary-soft: #1D3A33;
+  --color-primary-text: #8FDCC6;
+
+  --color-warn: #E9B265;
+  --color-warn-bg: #3B2D15;
+  --color-warn-border: #6E5223;
+  --color-danger: #C93A32;
+  --color-danger-text: #FF8F88;
+  --color-danger-bg: #3E1A19;
+  --color-danger-border: #7A3431;
+
+  --sb-text: #E5EEEA;
+  --sb-muted: #8FA39B;
+  --sb-head: #C9DAD3;
+  --sb-legend: #B7CCC4;
+  --sb-line: #1F3A32;
+  --sb-field: #0F2823;
+  --sb-btn-border: #2F5A4E;
+  --sb-placeholder: #5F7F75;
+  --sb-focus: #5FD0B0;
+
+  --font-heading: "Syne", "Segoe UI", sans-serif;
+  --font-body: "Schibsted Grotesk", "Segoe UI", sans-serif;
+
+  --radius: 6px;
+  --shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar {
+  border-right: 1px solid var(--color-border);
+}
+
+.brand-mark {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.01em;
+}

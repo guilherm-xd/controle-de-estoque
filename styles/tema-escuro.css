@@ -1,0 +1,54 @@
+:root {
+  color-scheme: dark;
+
+  --corFundo: #0E1513;
+  --corSuperficie: #16211E;
+  --corTexto: #E5EEEA;
+  --corTextoSuave: #93A59E;
+  --corBorda: #263531;
+  --corCampo: #101A17;
+  --corLinhaHover: #1B2925;
+
+  --corPrimaria: #2A8570;
+  --corPrimariaEscura: #0A211C;
+  --corPrimariaHover: #1F6D5A;
+  --corPrimariaSuave: #1D3A33;
+  --corPrimariaTexto: #8FDCC6;
+
+  --corAlerta: #E9B265;
+  --corAlertaFundo: #3B2D15;
+  --corAlertaBorda: #6E5223;
+  --corPerigo: #C93A32;
+  --corPerigoTexto: #FF8F88;
+  --corPerigoFundo: #3E1A19;
+  --corPerigoBorda: #7A3431;
+
+  --barraTexto: #E5EEEA;
+  --barraApagado: #8FA39B;
+  --barraTitulo: #C9DAD3;
+  --barraLegenda: #B7CCC4;
+  --barraLinha: #1F3A32;
+  --barraCampo: #0F2823;
+  --barraBordaBotao: #2F5A4E;
+  --barraMarcador: #5F7F75;
+  --barraFoco: #5FD0B0;
+
+  --fonteTitulo: "Syne", "Segoe UI", sans-serif;
+  --fonteCorpo: "Schibsted Grotesk", "Segoe UI", sans-serif;
+
+  --raio: 6px;
+  --sombraCartao: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.barraLateral {
+  border-right: 1px solid var(--corBorda);
+}
+
+.marcaLogo {
+  background: var(--corPrimaria);
+  color: #FFFFFF;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.01em;
+}

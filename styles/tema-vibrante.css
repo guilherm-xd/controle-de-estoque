@@ -1,0 +1,62 @@
+:root {
+  --corFundo: #F4F3FF;
+  --corSuperficie: #FFFFFF;
+  --corTexto: #1E1B3A;
+  --corTextoSuave: #625F85;
+  --corBorda: #DAD8F0;
+  --corCampo: #FBFBFF;
+  --corLinhaHover: #F1F0FF;
+
+  --corPrimaria: #4F46E5;
+  --corPrimariaEscura: #2E2A78;
+  --corPrimariaHover: #3730A3;
+  --corPrimariaSuave: #E5E3FF;
+  --corPrimariaTexto: #2E2A78;
+
+  --corAlerta: #C2410C;
+  --corAlertaFundo: #FFEDD5;
+  --corAlertaBorda: #FDBA74;
+  --corPerigo: #DC2626;
+  --corPerigoTexto: #B91C1C;
+  --corPerigoFundo: #FEE2E2;
+  --corPerigoBorda: #FCA5A5;
+
+  --barraTexto: #F1F0FF;
+  --barraApagado: #C1BEF0;
+  --barraTitulo: #E4E2FF;
+  --barraLegenda: #D6D3FA;
+  --barraLinha: #443F99;
+  --barraCampo: #241F66;
+  --barraBordaBotao: #5D57B8;
+  --barraMarcador: #8683C9;
+  --barraFoco: #A5B4FC;
+
+  --fonteTitulo: "Bricolage Grotesque", "Segoe UI", sans-serif;
+  --fonteCorpo: "Familjen Grotesk", "Segoe UI", sans-serif;
+
+  --raio: 14px;
+  --sombraCartao: 0 6px 18px rgba(79, 70, 229, 0.10);
+}
+
+.barraLateral {
+  background: linear-gradient(180deg, var(--topoBarraLateral, #3B34B8) 0%, var(--corPrimariaEscura) 100%);
+}
+
+.marcaLogo {
+  border-radius: 50%;
+}
+
+.botao,
+.selo,
+.alternadorVisao {
+  border-radius: 999px;
+}
+
+.painel,
+.cartaoEstatistica {
+  border-color: transparent;
+}
+
+.valorEstatistica {
+  font-weight: 700;
+}

@@ -210,9 +210,11 @@ h3 {
   gap: 6px;
   flex: 1 1 200px;
 }
+
 .campoPequeno {
   flex: 0 1 130px;
 }
+
 .campoAcoes {
   flex: 0 0 auto;
 }
@@ -253,6 +255,7 @@ h3 {
   background: var(--corPrimaria);
   color: var(--corSobrePrimaria, #ffffff);
 }
+
 .botaoPrimario:hover {
   background: var(--corPrimariaHover);
 }
@@ -505,9 +508,11 @@ h3 {
   font-size: 18px;
   margin-bottom: 20px;
 }
+
 .modal .campo {
   margin-bottom: 16px;
 }
+
 .modal .linhaCampos {
   display: flex;
   gap: 14px;
@@ -543,20 +548,25 @@ h3 {
   .app {
     grid-template-columns: 1fr;
   }
+
   .barraLateral {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
   }
+
   .painelFiltro {
     flex: 1 1 100%;
   }
+
   .conteudo {
     padding: 24px 20px 32px;
   }
+
   .estatisticas {
     flex-wrap: wrap;
   }
+
   .cartaoEstatistica {
     flex: 1 1 140px;
   }
@@ -938,11 +948,11 @@ h3 {
   min-width: 0;
 }
 
-.botaoIcone + .botaoIcone {
+.botaoIcone+.botaoIcone {
   margin-left: 8px;
 }
 
-[data-visao="grade"] .botaoIcone + .botaoIcone {
+[data-visao="grade"] .botaoIcone+.botaoIcone {
   margin-left: 0;
 }
 
@@ -959,6 +969,7 @@ h3 {
 [data-visao="grade"] #listaProdutos td:last-child {
   padding-right: 0;
 }
+
 .avisoDesfazer {
   position: fixed;
   left: 50%;
@@ -1112,7 +1123,7 @@ th[data-dir="-1"]::after {
 }
 
 @media print {
-  body > *:not(#areaImpressao) {
+  body>*:not(#areaImpressao) {
     display: none !important;
   }
 
@@ -1518,16 +1529,26 @@ th[data-dir="-1"]::after {
 }
 
 @keyframes surgir {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.entrada > tr {
+.entrada>tr {
   animation: surgir 0.35s ease both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -1651,17 +1672,20 @@ th[data-dir="-1"]::after {
   .app[data-posicao="direita"] {
     grid-template-columns: 1fr var(--larguraBarraLateral, 260px);
   }
+
   .app[data-posicao="direita"] .barraLateral {
     grid-column: 2;
     grid-row: 1;
     border-right: 0;
     border-left: 1px solid var(--corBorda);
   }
+
   .app[data-posicao="direita"] .conteudo {
     grid-column: 1;
     grid-row: 1;
     min-width: 0;
   }
+
   .app[data-posicao="direita"] .redimensionador {
     left: -4px;
     right: auto;
@@ -1711,7 +1735,7 @@ th[data-dir="-1"]::after {
   margin-right: auto;
 }
 
-.app:is([data-posicao="topo"], [data-posicao="base"]) .marca > div,
+.app:is([data-posicao="topo"], [data-posicao="base"]) .marca>div,
 .app:is([data-posicao="topo"], [data-posicao="base"]) .redimensionador,
 .app:is([data-posicao="topo"], [data-posicao="base"]) .gatilhoTema label,
 .app:is([data-posicao="topo"], [data-posicao="base"]) .botaoTema #nomeTema,

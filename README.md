@@ -129,6 +129,6 @@ Durante o desenvolvimento deste projeto foi possível aprender:
 ## Equipe de Desenvolvimento
 
 - [Alexandre Henrique Pereira de Araujo](https://github.com/henriqtw)
-- [Gustavo Oliveira Almeida](https://github.com/Gustavo-0093)
 - [Guilherme Miranda Murillo](https://github.com/guilherm-xd)
+- [Gustavo Oliveira Almeida](https://github.com/Gustavo-0093)
 - [Nicolas da Silva Mira](https://github.com/devMiraPy)

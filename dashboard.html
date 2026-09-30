@@ -169,10 +169,17 @@
       </form>
     </section>
 
-    <section class="panel list-panel">
+    <section class="panel list-panel" data-visao="detalhes">
       <div class="list-header">
         <h2>Produtos disponíveis</h2>
-        <input type="search" id="busca-produto" placeholder="Buscar por nome...">
+        <div class="list-tools">
+          <input type="search" id="busca-produto" placeholder="Buscar por nome...">
+          <div class="view-toggle" role="group" aria-label="Modo de exibição">
+            <button type="button" class="view-btn" data-visao="detalhes" aria-pressed="true">Detalhes</button>
+            <button type="button" class="view-btn" data-visao="grade" aria-pressed="false">Grade</button>
+            <button type="button" class="view-btn" data-visao="compacta" aria-pressed="false">Compacta</button>
+          </div>
+        </div>
       </div>
 
       <div class="table-wrap">

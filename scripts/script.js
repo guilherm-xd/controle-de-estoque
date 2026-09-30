@@ -39,6 +39,7 @@ const btnPersonalizarTema = document.getElementById('btn-personalizar-tema');
 const modalTemaOverlay = document.getElementById('modal-tema-overlay');
 const corPrimaria = document.getElementById('cor-primaria');
 const corFundo = document.getElementById('cor-fundo');
+const corSidebar = document.getElementById('cor-sidebar');
 const corAlerta = document.getElementById('cor-alerta');
 const btnResetarTema = document.getElementById('btn-resetar-tema');
 const btnAplicarTema = document.getElementById('btn-aplicar-tema');
@@ -360,6 +361,7 @@ function lerCorDoTema(variavel) {
 btnPersonalizarTema.addEventListener('click', () => {
   corPrimaria.value = lerCorDoTema('--color-primary');
   corFundo.value = lerCorDoTema('--color-bg');
+  corSidebar.value = lerCorDoTema('--color-sidebar') || lerCorDoTema('--color-primary-dark');
   corAlerta.value = lerCorDoTema('--color-warn');
   modalTemaOverlay.hidden = false;
 });
@@ -367,6 +369,7 @@ btnPersonalizarTema.addEventListener('click', () => {
 btnAplicarTema.addEventListener('click', () => {
   raiz.style.setProperty('--color-primary', corPrimaria.value);
   raiz.style.setProperty('--color-bg', corFundo.value);
+  raiz.style.setProperty('--color-sidebar', corSidebar.value);
   raiz.style.setProperty('--color-warn', corAlerta.value);
   modalTemaOverlay.hidden = true;
 });
@@ -374,6 +377,7 @@ btnAplicarTema.addEventListener('click', () => {
 function resetarCores() {
   raiz.style.removeProperty('--color-primary');
   raiz.style.removeProperty('--color-bg');
+  raiz.style.removeProperty('--color-sidebar');
   raiz.style.removeProperty('--color-warn');
 }
 
@@ -381,6 +385,7 @@ btnResetarTema.addEventListener('click', () => {
   resetarCores();
   corPrimaria.value = lerCorDoTema('--color-primary');
   corFundo.value = lerCorDoTema('--color-bg');
+  corSidebar.value = lerCorDoTema('--color-sidebar') || lerCorDoTema('--color-primary-dark');
   corAlerta.value = lerCorDoTema('--color-warn');
 });
 

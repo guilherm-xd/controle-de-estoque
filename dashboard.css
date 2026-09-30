@@ -25,7 +25,7 @@ h3 {
 }
 
 .sidebar {
-  background: var(--color-primary-dark);
+  background: var(--color-sidebar, var(--color-primary-dark));
   color: var(--sb-text);
   padding: 28px 24px;
   display: flex;
@@ -47,7 +47,7 @@ h3 {
   height: 40px;
   border-radius: var(--radius);
   background: var(--sb-text);
-  color: var(--color-primary-dark);
+  color: var(--color-sidebar, var(--color-primary-dark));
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 15px;

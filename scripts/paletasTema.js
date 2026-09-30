@@ -9,13 +9,19 @@ function aplicarTema(tema) {
   atualizarMenuTema();
 }
 
-function aplicarPaleta(modo, cor) {
+function aplicarPaleta(modo, cor, hex) {
   if (!MODOS_PALETA[modo] || !PALETAS_CORES[cor]) return;
+  var personalizada = cor === "personalizada";
+  if (personalizada) {
+    hex = hex || lerHexPersonalizado();
+    ajustarPersonalizada(hex);
+  }
   limparPaleta();
   definirVars(calcularPaleta(modo, cor));
-  estadoTema.paleta = { modo: modo, cor: cor };
+  estadoTema.paleta = { modo: modo, cor: cor, hex: personalizada ? hex : undefined };
   guardar("paleta-modo", modo);
   guardar("paleta-cor", cor);
+  guardar("paleta-hex", personalizada ? hex : null);
   atualizarMenuTema();
 }
 
@@ -24,7 +30,12 @@ function lerFavoritos() {
     var lista = JSON.parse(localStorage.getItem("temas-favoritos"));
     if (!Array.isArray(lista)) return [];
     return lista.filter(function (f) {
-      return TEMAS[f.tema] && MODOS_PALETA[f.modo] && PALETAS_CORES[f.cor];
+      return (
+        TEMAS[f.tema] &&
+        MODOS_PALETA[f.modo] &&
+        PALETAS_CORES[f.cor] &&
+        (f.cor !== "personalizada" || /^#[0-9a-f]{6}$/i.test(f.hex || ""))
+      );
     });
   } catch (erro) {
     return [];
@@ -36,18 +47,18 @@ function salvarFavoritos(lista) {
 }
 
 function mesmoFavorito(a, b) {
-  return a.tema === b.tema && a.modo === b.modo && a.cor === b.cor;
+  return a.tema === b.tema && a.modo === b.modo && a.cor === b.cor && a.hex === b.hex;
 }
 
 function favoritoAtual() {
   var paleta = estadoTema.paleta;
   return paleta
-    ? { tema: estadoTema.tema, modo: paleta.modo, cor: paleta.cor }
+    ? { tema: estadoTema.tema, modo: paleta.modo, cor: paleta.cor, hex: paleta.hex }
     : null;
 }
 
 function nomeFavorito(f) {
-  var nome = MODOS_PALETA[f.modo].nome + " · " + PALETAS_CORES[f.cor].nome;
+  var nome = MODOS_PALETA[f.modo].nome + " · " + PALETAS_CORES[f.cor].nome + (f.hex ? " " + f.hex : "");
   return f.tema === "classico" ? nome : nome + " · " + TEMAS[f.tema].nome;
 }
 
@@ -70,7 +81,7 @@ function alternarFavorito() {
 
 function aplicarFavorito(f) {
   aplicarTema(f.tema);
-  aplicarPaleta(f.modo, f.cor);
+  aplicarPaleta(f.modo, f.cor, f.hex);
 }
 
 function criarLinhaTema(
@@ -140,7 +151,7 @@ function atualizarMenuTema() {
     lista.appendChild(
       criarLinhaTema(
         nomeFavorito(f),
-        PALETAS_CORES[f.cor].acento,
+        (f.hex || PALETAS_CORES[f.cor].acento),
         "favorito",
         i,
         !!atual && mesmoFavorito(f, atual),
@@ -162,6 +173,13 @@ function atualizarMenuTema() {
     );
   });
 
+  var botaoPers = document.getElementById("botaoPersonalizada");
+  var ehPers = !!paleta && paleta.cor === "personalizada";
+  botaoPers.setAttribute("aria-pressed", ehPers);
+  document.getElementById("amostraPersonalizada").style.background = ehPers
+    ? PALETAS_CORES.personalizada.acento
+    : "conic-gradient(#e53935, #f0c94a, #32b85f, #18b9d2, #3344ff, #8833ff, #e53935)";
+
   var botaoFavoritar = document.getElementById("botaoFavoritar");
   var jaFavorito =
     !!atual &&
@@ -180,7 +198,7 @@ function montarMenuTema() {
   var listaTemas = document.getElementById("listaTemas");
   var grupoModo = document.getElementById("grupoModo");
   var grupoCores = document.getElementById("grupoCores");
-  var modoAtual = "claro";
+  var modoAtual = "escuro";
 
   ORDEM_CORES_PALETA.forEach(function (cor) {
     var botao = document.createElement("button");
@@ -225,6 +243,20 @@ function montarMenuTema() {
     fechar();
   });
 
+  var campoCor = document.getElementById("campoCorPersonalizada");
+  document
+    .getElementById("botaoPersonalizada")
+    .addEventListener("click", function () {
+      var p = estadoTema.paleta;
+      campoCor.value = p ? PALETAS_CORES[p.cor].acento : lerHexPersonalizado();
+      if (campoCor.showPicker) campoCor.showPicker();
+      else campoCor.click();
+    });
+  campoCor.addEventListener("input", function () {
+    var modo = estadoTema.paleta ? estadoTema.paleta.modo : modoAtual;
+    aplicarPaleta(modo, "personalizada", campoCor.value);
+  });
+
   document
     .getElementById("botaoFavoritar")
     .addEventListener("click", alternarFavorito);
@@ -260,13 +292,23 @@ function carregarTema() {
   var modo = localStorage.getItem("paleta-modo");
   var cor = localStorage.getItem("paleta-cor");
 
+  if (!tema && !modo && !cor) {
+    modo = "escuro";
+    cor = "abismo";
+  }
+
   if (TEMAS[tema]) {
     document.getElementById("linkTema").href = "styles/tema-" + tema + ".css";
     estadoTema.tema = tema;
   }
   if (MODOS_PALETA[modo] && PALETAS_CORES[cor]) {
+    var hex;
+    if (cor === "personalizada") {
+      hex = lerHexPersonalizado();
+      ajustarPersonalizada(hex);
+    }
     definirVars(calcularPaleta(modo, cor));
-    estadoTema.paleta = { modo: modo, cor: cor };
+    estadoTema.paleta = { modo: modo, cor: cor, hex: hex };
   }
 }
 

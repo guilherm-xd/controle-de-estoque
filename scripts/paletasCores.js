@@ -37,6 +37,27 @@ function textoSobre(hex) {
   return luminancia(hex) > 0.4 ? "#14181c" : "#ffffff";
 }
 
+function ajustarPersonalizada(hex) {
+  var c = PALETAS_CORES.personalizada;
+  c.acento = hex;
+  c.acentoTexto = misturar(hex, "#ffffff", 0.8);
+  c.cursor = misturar(hex, "#ffffff", 0.45);
+  PALETAS_FUNDOS.escuro.personalizada = [
+    misturar("#000000", hex, 0.08),
+    misturar("#000000", hex, 0.13),
+    misturar("#000000", hex, 0.3),
+    misturar("#000000", hex, 0.18),
+  ];
+}
+
+function lerHexPersonalizado() {
+  try {
+    var hex = localStorage.getItem("paleta-hex");
+    if (/^#[0-9a-f]{6}$/i.test(hex || "")) return hex;
+  } catch (erro) {}
+  return "#8833ff";
+}
+
 function guardar(chave, valor) {
   try {
     if (valor === null) localStorage.removeItem(chave);

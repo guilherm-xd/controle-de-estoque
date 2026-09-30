@@ -15,7 +15,7 @@ function fecharFiltroCompacto() {
 }
 
 function aplicarPosicao(posicao) {
-  if (!POSICOES_BARRA.includes(posicao)) posicao = 'esquerda';
+  if (!POSICOES_BARRA.includes(posicao)) posicao = 'topo';
   app.dataset.posicao = posicao;
   menuPosicao.querySelectorAll('[data-posicao]').forEach(botao => {
     botao.setAttribute('aria-pressed', botao.dataset.posicao === posicao);

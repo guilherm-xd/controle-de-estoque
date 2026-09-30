@@ -617,6 +617,7 @@ h3 {
     "nome  status"
     "cat   cat"
     "qtd   preco"
+    "total total"
     "acoes acoes";
   gap: 6px 12px;
   padding: 16px;
@@ -673,6 +674,19 @@ h3 {
 }
 
 [data-visao="grade"] #listaProdutos td:nth-child(6) {
+  grid-area: total;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+[data-visao="grade"] #listaProdutos td:nth-child(6)::before {
+  content: "Total: ";
+  font-weight: 400;
+  color: var(--corTextoSuave);
+}
+
+[data-visao="grade"] #listaProdutos td:nth-child(7) {
   grid-area: acoes;
   display: flex;
   gap: 8px;
@@ -1758,4 +1772,171 @@ th[data-dir="-1"]::after {
 .app[data-posicao="base"] .menuPosicao {
   top: auto;
   bottom: calc(100% + 10px);
+}
+
+/* ---------- Cor personalizada ---------- */
+.botaoPersonalizada {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.botaoPersonalizada[aria-pressed="true"] {
+  border-style: solid;
+  border-color: var(--corPrimaria);
+}
+
+.campoCorOculto {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Total por produto ---------- */
+.celulaTotal {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- Estilos de gráfico ---------- */
+.cabecalhoGrafico {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.cabecalhoGrafico h2 {
+  margin: 0;
+}
+
+.botaoEstiloGrafico {
+  font-family: var(--fonteCorpo);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border: 0;
+  border-right: 1px solid var(--corBorda);
+  background: transparent;
+  color: var(--corTextoSuave);
+  cursor: pointer;
+}
+
+.botaoEstiloGrafico:last-child {
+  border-right: 0;
+}
+
+.botaoEstiloGrafico:hover {
+  background: var(--corPrimariaSuave);
+  color: var(--corPrimariaTexto);
+}
+
+.botaoEstiloGrafico[aria-pressed="true"] {
+  background: var(--corPrimaria);
+  color: var(--corSobrePrimaria, #ffffff);
+}
+
+.botaoEstiloGrafico:focus-visible {
+  outline: 2px solid var(--corPrimaria);
+  outline-offset: -2px;
+}
+
+.colunasGrafico {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  min-height: 220px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.colunaGrafico {
+  flex: 1 1 64px;
+  min-width: 64px;
+  max-width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.barraColuna {
+  width: 70%;
+  background: var(--corPrimaria);
+  border-radius: 6px 6px 0 0;
+  transition: height 0.3s;
+}
+
+.valorColuna {
+  color: var(--corTextoSuave);
+}
+
+.nomeColuna {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pizzaGrafico {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+.svgPizza {
+  width: 190px;
+  height: 190px;
+  flex: none;
+}
+
+.textoRosca {
+  fill: var(--corTexto);
+  font-family: var(--fonteTitulo);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.legendaGrafico {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1 1 200px;
+  font-size: 13.5px;
+}
+
+.legendaGrafico li {
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.pontoLegenda {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.nomeLegenda {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.valorLegenda {
+  color: var(--corTextoSuave);
 }

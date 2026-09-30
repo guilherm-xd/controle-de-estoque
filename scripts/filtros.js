@@ -53,3 +53,11 @@ botoesVisao.forEach(botao => {
     botoesVisao.forEach(b => b.setAttribute('aria-pressed', b === botao));
   });
 });
+
+document.getElementById('alternadorGrafico').addEventListener('click', evento => {
+  const botao = evento.target.closest('[data-grafico]');
+  if (!botao) return;
+  estiloGrafico = botao.dataset.grafico;
+  guardar('estilo-grafico', estiloGrafico);
+  renderizarGrafico();
+});

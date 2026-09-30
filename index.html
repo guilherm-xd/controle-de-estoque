@@ -18,7 +18,7 @@
     <script src="scripts/paletasTema.js"></script>
   </head>
   <body>
-    <div class="app">
+    <div class="app" data-posicao="topo">
       <aside class="barraLateral">
         <div class="marca">
           <span class="marcaLogo"><img src="img/logo.png" alt="Logo" /></span>
@@ -99,6 +99,22 @@
                 </button>
               </div>
               <div class="grupoCores" id="grupoCores"></div>
+              <button
+                type="button"
+                class="botaoFavoritar botaoPersonalizada"
+                id="botaoPersonalizada"
+                aria-pressed="false"
+              >
+                <span class="amostraTema" id="amostraPersonalizada"></span>
+                Cor personalizada
+              </button>
+              <input
+                type="color"
+                id="campoCorPersonalizada"
+                class="campoCorOculto"
+                tabindex="-1"
+                aria-hidden="true"
+              />
               <button
                 type="button"
                 class="botaoFavoritar"
@@ -458,6 +474,7 @@
                   <th data-campo="quantidade">Quantidade</th>
                   <th data-campo="preco">Preço</th>
                   <th>Status</th>
+                  <th data-campo="total">Total</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -477,7 +494,15 @@
           </p>
         </section>
         <section class="painel" id="painelGrafico" hidden>
-          <h2>Itens por categoria</h2>
+          <div class="cabecalhoGrafico">
+            <h2>Itens por categoria</h2>
+            <div class="alternadorVisao" id="alternadorGrafico" role="group" aria-label="Estilo do gráfico">
+              <button type="button" class="botaoEstiloGrafico" data-grafico="barras" aria-pressed="true">Barras</button>
+              <button type="button" class="botaoEstiloGrafico" data-grafico="colunas" aria-pressed="false">Colunas</button>
+              <button type="button" class="botaoEstiloGrafico" data-grafico="pizza" aria-pressed="false">Pizza</button>
+              <button type="button" class="botaoEstiloGrafico" data-grafico="rosca" aria-pressed="false">Rosca</button>
+            </div>
+          </div>
           <div id="graficoCategorias"></div>
         </section>
         <footer class="rodape">
@@ -630,6 +655,7 @@
     <script src="scripts/desconto.js"></script>
     <script src="scripts/historico.js"></script>
     <script src="scripts/posicao.js"></script>
+    <script src="scripts/desfazer.js"></script>
     <script src="scripts/estoques.js"></script>
   </body>
 </html>

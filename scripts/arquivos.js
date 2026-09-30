@@ -75,11 +75,11 @@ document.getElementById('botaoConfirmarExportar').addEventListener('click', expo
 
 document.getElementById('botaoReposicao').addEventListener('click', () => {
   const faltando = produtos.filter(estoqueBaixo).sort((a, b) => a.quantidade - b.quantidade);
-  const linhas = faltando.map(p => `<tr><td>${p.nome.replace(/</g, '&lt;')}</td><td>${(p.categoria || '—').replace(/</g, '&lt;')}</td><td>${p.quantidade}</td><td></td></tr>`).join('');
+  const linhas = faltando.map(p => `<tr><td>${p.nome.replace(/</g, '&lt;')}</td><td>${(p.categoria || '-').replace(/</g, '&lt;')}</td><td>${p.quantidade}</td><td></td></tr>`).join('');
 
   areaImpressao.innerHTML = `
     <h1>Lista de reposição</h1>
-    <p>${estoqueAtivo().nome.replace(/</g, '&lt;')} — ${new Date().toLocaleDateString('pt-BR')}</p>
+    <p>${estoqueAtivo().nome.replace(/</g, '&lt;')} - ${new Date().toLocaleDateString('pt-BR')}</p>
     ${faltando.length === 0
       ? '<p>Nenhum item com estoque baixo.</p>'
       : `<table><thead><tr><th>Produto</th><th>Categoria</th><th>Em estoque</th><th>Quantidade a pedir</th></tr></thead><tbody>${linhas}</tbody></table>`}`;

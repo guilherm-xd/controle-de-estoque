@@ -90,6 +90,12 @@ let proximoIdEstoque = 2;
 let excluindoEstoque = false;
 let timerExcluir;
 
+let estiloGrafico = "barras";
+try {
+  const salvoGrafico = localStorage.getItem("estilo-grafico");
+  if (["barras", "colunas", "pizza", "rosca"].includes(salvoGrafico)) estiloGrafico = salvoGrafico;
+} catch (erro) {}
+
 let ordem = { campo: null, dir: 1 };
 let idTransferindo = null;
 const idsMarcados = new Set();
@@ -161,10 +167,30 @@ function estoqueAtivo() {
   return estoques.find((e) => e.id === estoqueAtivoId);
 }
 
+let ultimoEstado = null;
+let pilhaDesfazer = [];
+let pilhaRefazer = [];
+let restaurando = false;
+
+function registrarEstado() {
+  const foto = JSON.stringify({
+    estoques: estoques.map(({ historico, ...resto }) => resto),
+    proximoIdEstoque,
+  });
+
+  if (ultimoEstado && !restaurando && foto !== ultimoEstado.foto) {
+    pilhaDesfazer.push(ultimoEstado);
+    if (pilhaDesfazer.length > 50) pilhaDesfazer.shift();
+    pilhaRefazer = [];
+  }
+  ultimoEstado = { foto, ativo: estoqueAtivoId };
+}
+
 function salvarDados() {
   const atual = estoqueAtivo();
   atual.produtos = produtos;
   atual.proximoId = proximoId;
+  registrarEstado();
 
   localStorage.setItem(
     "estoques",

@@ -22,6 +22,7 @@ var PALETAS_CORES = {
   rosa: { nome: "Rosa", acento: "#ff6fae", acentoTexto: "#ffe3f0", presente: "#d8a33c", cursor: "#ff96c5" },
   agua: { nome: "Ciano", acento: "#18b9d2", acentoTexto: "#d7faff", presente: "#d8a23c", cursor: "#55d7eb" },
   verdeagua: { nome: "Verde agua", acento: "#24d6ad", acentoTexto: "#d8fff5", presente: "#d7a63a", cursor: "#61edce" },
+  personalizada: { nome: "Personalizada", acento: "#8833ff", acentoTexto: "#e1ccff", presente: "#d7a33b", cursor: "#b885ff" },
   amarelo: { nome: "Amarelo", acento: "#f0c94a", acentoTexto: "#fff2bd", presente: "#d99424", cursor: "#ffe07a" },
 };
 
@@ -54,6 +55,7 @@ var PALETAS_FUNDOS = {
     rosa: ["#1a0d14", "#25131d", "#4a2638", "#2a1722"],
     agua: ["#06171b", "#0b242a", "#1b5561", "#102f37"],
     verdeagua: ["#061814", "#0b251f", "#1b5b4c", "#10362d"],
+    personalizada: ["#0d0714", "#150b21", "#2c1a4d", "#1d1030"],
     amarelo: ["#171308", "#211b0e", "#4a3d1d", "#292211"],
   },
 };

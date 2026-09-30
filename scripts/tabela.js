@@ -1,3 +1,7 @@
+function valorDoCampo(produto, campo) {
+  return campo === 'total' ? produto.quantidade * produto.preco : produto[campo];
+}
+
 function filtrarProdutos() {
   const termo = termoBusca.trim().toLowerCase();
 
@@ -9,8 +13,8 @@ function filtrarProdutos() {
   if (!ordem.campo) return lista;
 
   return lista.sort((a, b) => {
-    const x = a[ordem.campo];
-    const y = b[ordem.campo];
+    const x = valorDoCampo(a, ordem.campo);
+    const y = valorDoCampo(b, ordem.campo);
     const resultado = typeof x === 'string' ? x.localeCompare(y, 'pt-BR') : x - y;
     return resultado * ordem.dir;
   });
@@ -134,7 +138,7 @@ function criarLinha(produto) {
   const tdNome = criarCelula(produto.nome);
   if (modoSelecao()) tdNome.prepend(criarCaixaMarcar(produto.id));
   tr.appendChild(tdNome);
-  tr.appendChild(criarCelula(produto.categoria || '—'));
+  tr.appendChild(criarCelula(produto.categoria || '-'));
   tr.appendChild(criarCelulaQuantidade(produto));
   tr.appendChild(criarCelulaPreco(produto));
 
@@ -152,6 +156,10 @@ function criarLinha(produto) {
   }
   tdStatus.appendChild(selo);
   tr.appendChild(tdStatus);
+
+  const tdTotal = criarCelula(formatarPreco(produto.quantidade * produto.preco));
+  tdTotal.className = 'celulaTotal';
+  tr.appendChild(tdTotal);
 
   const tdAcoes = document.createElement('td');
   tdAcoes.appendChild(criarBotaoEditar(produto.id));
@@ -193,18 +201,14 @@ function atualizarIndicadores() {
   botaoDesfazerDescontos.hidden = !produtos.some(p => p.desconto);
 }
 
-function renderizarGrafico() {
-  const totais = produtos.reduce((acc, p) => {
-    const categoria = p.categoria || 'Sem categoria';
-    acc[categoria] = (acc[categoria] || 0) + p.quantidade;
-    return acc;
-  }, {});
-  const entradas = Object.entries(totais).sort((a, b) => b[1] - a[1]);
-  const maior = Math.max(1, ...entradas.map(e => e[1]));
+const CORES_GRAFICO = ['var(--corPrimaria)', '#e8a33d', '#d9534f', '#2fb37a', '#9b59b6', '#17a2b8', '#e67e22', '#ec6fa8', '#8d6e63', '#7f8c8d'];
+const SVG_NS = 'http://www.w3.org/2000/svg';
 
-  painelGrafico.hidden = entradas.length === 0;
-  graficoCategorias.innerHTML = '';
+function corDaFatia(indice) {
+  return CORES_GRAFICO[indice % CORES_GRAFICO.length];
+}
 
+function desenharBarras(entradas, maior) {
   entradas.forEach(([categoria, quantidade]) => {
     const linha = document.createElement('div');
     const nome = document.createElement('span');
@@ -225,4 +229,123 @@ function renderizarGrafico() {
     linha.append(nome, trilho, valor);
     graficoCategorias.appendChild(linha);
   });
+}
+
+function desenharColunas(entradas, maior) {
+  const area = document.createElement('div');
+  area.className = 'colunasGrafico';
+
+  entradas.forEach(([categoria, quantidade]) => {
+    const coluna = document.createElement('div');
+    const valor = document.createElement('span');
+    const barra = document.createElement('div');
+    const nome = document.createElement('span');
+
+    coluna.className = 'colunaGrafico';
+    valor.className = 'valorColuna';
+    valor.textContent = quantidade;
+    barra.className = 'barraColuna';
+    barra.style.height = Math.max(4, Math.round((quantidade / maior) * 150)) + 'px';
+    nome.className = 'nomeColuna';
+    nome.textContent = categoria;
+    nome.title = categoria;
+
+    coluna.append(valor, barra, nome);
+    area.appendChild(coluna);
+  });
+  graficoCategorias.appendChild(area);
+}
+
+function desenharPizza(entradas, rosca) {
+  const fatias = entradas.filter(e => e[1] > 0);
+  const total = fatias.reduce((soma, e) => soma + e[1], 0);
+
+  if (total === 0) {
+    graficoCategorias.textContent = 'Nenhum item em estoque para exibir.';
+    return;
+  }
+
+  const raio = rosca ? 38 : 25;
+  const espessura = rosca ? 22 : 50;
+  const circunferencia = 2 * Math.PI * raio;
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  const legenda = document.createElement('ul');
+  const envolucro = document.createElement('div');
+  let acumulado = 0;
+
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('class', 'svgPizza');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Itens por categoria');
+  legenda.className = 'legendaGrafico';
+  envolucro.className = 'pizzaGrafico';
+
+  fatias.forEach(([categoria, quantidade], i) => {
+    const comprimento = (quantidade / total) * circunferencia;
+    const percentual = String(Math.round((quantidade / total) * 1000) / 10).replace('.', ',');
+    const circulo = document.createElementNS(SVG_NS, 'circle');
+    const dica = document.createElementNS(SVG_NS, 'title');
+    const item = document.createElement('li');
+    const ponto = document.createElement('span');
+    const nome = document.createElement('span');
+    const valor = document.createElement('span');
+
+    circulo.setAttribute('cx', 50);
+    circulo.setAttribute('cy', 50);
+    circulo.setAttribute('r', raio);
+    circulo.setAttribute('fill', 'none');
+    circulo.setAttribute('transform', 'rotate(-90 50 50)');
+    circulo.style.stroke = corDaFatia(i);
+    circulo.style.strokeWidth = espessura;
+    circulo.style.strokeDasharray = `${comprimento} ${circunferencia - comprimento}`;
+    circulo.style.strokeDashoffset = -acumulado;
+    dica.textContent = `${categoria}: ${quantidade} (${percentual}%)`;
+    circulo.appendChild(dica);
+    svg.appendChild(circulo);
+    acumulado += comprimento;
+
+    ponto.className = 'pontoLegenda';
+    ponto.style.background = corDaFatia(i);
+    nome.className = 'nomeLegenda';
+    nome.textContent = categoria;
+    valor.className = 'valorLegenda';
+    valor.textContent = `${quantidade} (${percentual}%)`;
+    item.append(ponto, nome, valor);
+    legenda.appendChild(item);
+  });
+
+  if (rosca) {
+    const texto = document.createElementNS(SVG_NS, 'text');
+    texto.setAttribute('x', 50);
+    texto.setAttribute('y', 50);
+    texto.setAttribute('text-anchor', 'middle');
+    texto.setAttribute('dominant-baseline', 'central');
+    texto.setAttribute('class', 'textoRosca');
+    texto.textContent = total;
+    svg.appendChild(texto);
+  }
+
+  envolucro.append(svg, legenda);
+  graficoCategorias.appendChild(envolucro);
+}
+
+function renderizarGrafico() {
+  const totais = produtos.reduce((acc, p) => {
+    const categoria = p.categoria || 'Sem categoria';
+    acc[categoria] = (acc[categoria] || 0) + p.quantidade;
+    return acc;
+  }, {});
+  const entradas = Object.entries(totais).sort((a, b) => b[1] - a[1]);
+  const maior = Math.max(1, ...entradas.map(e => e[1]));
+
+  painelGrafico.hidden = entradas.length === 0;
+  graficoCategorias.innerHTML = '';
+  document.querySelectorAll('.botaoEstiloGrafico').forEach(botao => {
+    botao.setAttribute('aria-pressed', botao.dataset.grafico === estiloGrafico);
+  });
+
+  if (estiloGrafico === 'colunas') desenharColunas(entradas, maior);
+  else if (estiloGrafico === 'pizza') desenharPizza(entradas, false);
+  else if (estiloGrafico === 'rosca') desenharPizza(entradas, true);
+  else desenharBarras(entradas, maior);
 }

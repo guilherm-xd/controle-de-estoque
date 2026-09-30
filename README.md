@@ -4,7 +4,7 @@
 
 Feito para quem precisa de uma ferramenta rápida para controlar quantidades, preços e reposição, com direito a temas personalizáveis, descontos em lote e importação/exportação de planilhas.
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/36f906e0-41ed-4c9b-b614-ae5e6be705ad" />
+<img width="1920" height="1080" alt="Design sem nome" src="https://github.com/user-attachments/assets/ebaa8900-c885-458b-a5c1-146194ffb469" />
 
 ---
 

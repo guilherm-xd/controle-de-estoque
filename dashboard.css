@@ -854,3 +854,85 @@ h3 {
     padding: 0 20px;
   }
 }
+
+.btn-editar,
+.btn-remover {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 9px;
+}
+
+.btn-editar:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-icon[data-tip] {
+  position: relative;
+}
+
+.btn-icon[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 120px;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-ink);
+  color: var(--color-surface);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+  z-index: 3;
+}
+
+.btn-icon[data-tip]:hover::after,
+.btn-icon[data-tip]:focus-visible::after,
+.btn-remover.armado::after {
+  opacity: 1;
+}
+
+.btn-remover.armado::after {
+  background: var(--color-danger);
+  color: #ffffff;
+}
+
+.modal .field-row .field {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.modal .field input {
+  width: 100%;
+  min-width: 0;
+}
+
+.btn-icon + .btn-icon {
+  margin-left: 8px;
+}
+
+[data-visao="grade"] .btn-icon + .btn-icon {
+  margin-left: 0;
+}
+
+.table-wrap {
+  margin-top: -16px;
+  padding-top: 16px;
+}
+
+.tabela-produtos th:last-child,
+.tabela-produtos td:last-child {
+  padding-right: 48px;
+}
+
+[data-visao="grade"] #lista-produtos td:last-child {
+  padding-right: 0;
+}

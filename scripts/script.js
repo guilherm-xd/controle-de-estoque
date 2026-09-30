@@ -96,23 +96,27 @@ function criarCelula(texto) {
   return td;
 }
 
-function criarBotao(texto, acao, id) {
+const ICONE_LIXEIRA = '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8.5 8.5v5M11.5 8.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+const ICONE_LAPIS = '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M13.3 2.7l4 4L6.4 17.6H2.4v-4L13.3 2.7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+
+function criarBotaoEditar(id) {
   const botao = document.createElement('button');
-  botao.className = 'btn-icon';
-  botao.textContent = texto;
-  botao.dataset.action = acao;
+  botao.className = 'btn-icon btn-editar';
+  botao.innerHTML = ICONE_LAPIS;
+  botao.dataset.tip = 'Editar';
+  botao.setAttribute('aria-label', 'Editar');
+  botao.dataset.action = 'editar';
   botao.dataset.id = id;
   return botao;
 }
-
-const ICONE_LIXEIRA = '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8.5 8.5v5M11.5 8.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 function criarBotaoRemover(id) {
   const botao = document.createElement('button');
   botao.className = 'btn-icon btn-remover' + (id === idParaRemover ? ' armado' : '');
   botao.innerHTML = ICONE_LIXEIRA;
-  botao.title = id === idParaRemover ? 'Clique de novo para remover' : 'Remover (clique duas vezes)';
-  botao.setAttribute('aria-label', botao.title);
+  botao.dataset.tip = id === idParaRemover ? 'Tem certeza? Clique novamente' : 'Remover';
+  botao.setAttribute('aria-label', botao.dataset.tip);
   botao.dataset.action = 'remover';
   botao.dataset.id = id;
   return botao;
@@ -143,7 +147,7 @@ function criarLinha(produto) {
   tr.appendChild(tdStatus);
 
   const tdAcoes = document.createElement('td');
-  tdAcoes.appendChild(criarBotao('Editar', 'editar', produto.id));
+  tdAcoes.appendChild(criarBotaoEditar(produto.id));
   tdAcoes.appendChild(criarBotaoRemover(produto.id));
   tr.appendChild(tdAcoes);
 

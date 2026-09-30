@@ -1,3 +1,17 @@
+const SEM_CATEGORIA = '__sem__';
+
+function preencherFiltroCategoria() {
+  const categorias = [...new Set(produtos.map(p => p.categoria || SEM_CATEGORIA))]
+    .sort((a, b) => a === SEM_CATEGORIA ? 1 : b === SEM_CATEGORIA ? -1 : a.localeCompare(b, 'pt-BR'));
+
+  if (categoriaFiltro && !categorias.includes(categoriaFiltro)) categoriaFiltro = '';
+
+  filtroCategoria.innerHTML = '';
+  filtroCategoria.appendChild(new Option('Todas as categorias', ''));
+  categorias.forEach(c => filtroCategoria.appendChild(new Option(c === SEM_CATEGORIA ? 'Sem categoria' : c, c)));
+  filtroCategoria.value = categoriaFiltro;
+}
+
 function valorDoCampo(produto, campo) {
   return campo === 'total' ? produto.quantidade * produto.preco : produto[campo];
 }
@@ -6,7 +20,8 @@ function filtrarProdutos() {
   const termo = termoBusca.trim().toLowerCase();
 
   const lista = produtos
-    .filter(p => p.nome.toLowerCase().includes(termo))
+    .filter(p => p.nome.toLowerCase().includes(termo) || (p.categoria || '').toLowerCase().includes(termo))
+    .filter(p => !categoriaFiltro || (p.categoria || SEM_CATEGORIA) === categoriaFiltro)
     .filter(p => filtroAtual.min === null || p.quantidade >= filtroAtual.min)
     .filter(p => filtroAtual.max === null || p.quantidade <= filtroAtual.max);
 
@@ -172,6 +187,7 @@ function criarLinha(produto) {
 }
 
 function renderizarLista() {
+  preencherFiltroCategoria();
   const visiveis = filtrarProdutos();
 
   listaProdutos.innerHTML = '';

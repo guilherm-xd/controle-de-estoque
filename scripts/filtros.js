@@ -47,6 +47,11 @@ buscaProduto.addEventListener('input', () => {
   renderizarLista();
 });
 
+filtroCategoria.addEventListener('change', () => {
+  categoriaFiltro = filtroCategoria.value;
+  renderizarLista();
+});
+
 botoesVisao.forEach(botao => {
   botao.addEventListener('click', () => {
     painelLista.setAttribute('data-visao', botao.dataset.visao);

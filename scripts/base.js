@@ -16,6 +16,7 @@ const botaoFiltrar = document.getElementById("botaoFiltrar");
 const botaoLimparFiltro = document.getElementById("botaoLimparFiltro");
 
 const buscaProduto = document.getElementById("buscaProduto");
+const filtroCategoria = document.getElementById("filtroCategoria");
 
 const estatisticaTotalProdutos = document.getElementById(
   "estatisticaTotalProdutos",
@@ -101,6 +102,7 @@ let idTransferindo = null;
 const idsMarcados = new Set();
 
 let termoBusca = "";
+let categoriaFiltro = "";
 let filtroAtual = { min: null, max: null };
 
 const toast = document.createElement("div");

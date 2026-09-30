@@ -70,6 +70,7 @@ function carregarEstoqueAtivo() {
 
   idParaRemover = null;
   termoBusca = '';
+  categoriaFiltro = '';
   filtroAtual = { min: null, max: null };
   buscaProduto.value = '';
   filtroQtdMin.value = '';

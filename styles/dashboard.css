@@ -296,6 +296,19 @@ h3 {
   background: var(--corCampo);
 }
 
+#filtroCategoria {
+  padding: 9px 12px;
+  border-radius: var(--raio);
+  border: 1px solid var(--corBorda);
+  font-family: var(--fonteCorpo);
+  font-size: 14px;
+  color: var(--corTexto);
+  background: var(--corCampo);
+  max-width: 200px;
+  cursor: pointer;
+}
+
+#filtroCategoria:focus-visible,
 #buscaProduto:focus-visible {
   outline: 2px solid var(--corPrimaria);
   outline-offset: 1px;
@@ -726,6 +739,11 @@ h3 {
   #buscaProduto {
     flex: 1 1 180px;
     min-width: 0;
+  }
+
+  #filtroCategoria {
+    flex: 1 1 140px;
+    max-width: none;
   }
 }
 

@@ -275,25 +275,74 @@ function escaparCsv(valor) {
   return /[";\n]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
 }
 
-function exportarCsv() {
-  const cabecalho = ['Produto', 'Categoria', 'Quantidade', 'Preço (R$)', 'Status'];
-  const linhas = produtos.map(p => [
+const modalExportarOverlay = document.getElementById('modal-exportar-overlay');
+const exportarFormato = document.getElementById('exportar-formato');
+const exportarEscopo = document.getElementById('exportar-escopo');
+const CABECALHO = ['Produto', 'Categoria', 'Quantidade', 'Preço (R$)', 'Status'];
+
+function statusDoProduto(p) {
+  return p.quantidade === 0 ? 'Sem estoque' : estoqueBaixo(p) ? 'Estoque baixo' : 'Em estoque';
+}
+
+function linhasDe(lista, comoTexto) {
+  return lista.map(p => [
     p.nome,
     p.categoria,
     p.quantidade,
-    p.preco.toFixed(2).replace('.', ','),
-    p.quantidade === 0 ? 'Sem estoque' : estoqueBaixo(p) ? 'Estoque baixo' : 'Em estoque'
+    comoTexto ? p.preco.toFixed(2).replace('.', ',') : p.preco,
+    statusDoProduto(p)
   ]);
-  const csv = [cabecalho, ...linhas].map(l => l.map(escaparCsv).join(';')).join('\r\n');
-  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+}
+
+function nomeDeAba(nome, usados) {
+  const base = nome.replace(/[\[\]:*?\/\\]/g, ' ').trim().slice(0, 28) || 'Estoque';
+  let final = base;
+  let i = 2;
+  while (usados.includes(final)) final = `${base} ${i++}`;
+  usados.push(final);
+  return final;
+}
+
+function baixarArquivo(blob, nome) {
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${estoqueAtivo().nome}.csv`;
+  link.download = nome;
   link.click();
   URL.revokeObjectURL(link.href);
 }
 
-document.getElementById('btn-exportar').addEventListener('click', exportarCsv);
+function exportar() {
+  estoqueAtivo().produtos = produtos;
+  const todos = exportarEscopo.value === 'todos';
+  const lista = todos ? estoques : [estoqueAtivo()];
+  const nomeArquivo = todos ? 'Todos os estoques' : estoqueAtivo().nome;
+
+  if (exportarFormato.value === 'xlsx') {
+    const livro = XLSX.utils.book_new();
+    const usados = [];
+    lista.forEach(e => {
+      const planilha = XLSX.utils.aoa_to_sheet([CABECALHO, ...linhasDe(e.produtos, false)]);
+      XLSX.utils.book_append_sheet(livro, planilha, nomeDeAba(e.nome, usados));
+    });
+    XLSX.writeFile(livro, `${nomeArquivo}.xlsx`);
+  } else {
+    const linhas = todos
+      ? lista.flatMap(e => linhasDe(e.produtos, true).map(l => [e.nome, ...l]))
+      : linhasDe(lista[0].produtos, true);
+    const cabecalho = todos ? ['Estoque', ...CABECALHO] : CABECALHO;
+    const csv = [cabecalho, ...linhas].map(l => l.map(escaparCsv).join(';')).join('\r\n');
+    baixarArquivo(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' }), `${nomeArquivo}.csv`);
+  }
+  modalExportarOverlay.hidden = true;
+}
+
+document.getElementById('btn-exportar').addEventListener('click', () => {
+  modalExportarOverlay.hidden = false;
+});
+document.getElementById('btn-cancelar-exportar').addEventListener('click', () => {
+  modalExportarOverlay.hidden = true;
+});
+document.getElementById('btn-confirmar-exportar').addEventListener('click', exportar);
 
 function abrirEdicao(id) {
   const produto = produtos.find(p => p.id === id);
@@ -501,7 +550,7 @@ function desarmarExclusao() {
   clearTimeout(timerExcluir);
   excluindoEstoque = false;
   btnExcluirEstoque.classList.remove('armado');
-  btnExcluirEstoque.title = 'Excluir este estoque (clique duas vezes)';
+  btnExcluirEstoque.dataset.tip = 'Excluir este estoque (clique duas vezes)';
 }
 
 function carregarEstoqueAtivo() {
@@ -543,7 +592,7 @@ function excluirEstoque() {
   if (!excluindoEstoque) {
     excluindoEstoque = true;
     btnExcluirEstoque.classList.add('armado');
-    btnExcluirEstoque.title = 'Clique de novo para excluir este estoque';
+    btnExcluirEstoque.dataset.tip = 'Clique de novo para excluir este estoque';
     timerExcluir = setTimeout(desarmarExclusao, 3000);
     return;
   }

@@ -1,7 +1,7 @@
 function aplicarTema(tema) {
   if (!TEMAS[tema]) tema = "classico";
   limparPaleta();
-  document.getElementById("linkTema").href = "tema-" + tema + ".css";
+  document.getElementById("linkTema").href = "styles/tema-" + tema + ".css";
   estadoTema = { tema: tema, paleta: null };
   guardar("tema-escolhido", tema);
   guardar("paleta-modo", null);
@@ -41,7 +41,9 @@ function mesmoFavorito(a, b) {
 
 function favoritoAtual() {
   var paleta = estadoTema.paleta;
-  return paleta ? { tema: estadoTema.tema, modo: paleta.modo, cor: paleta.cor } : null;
+  return paleta
+    ? { tema: estadoTema.tema, modo: paleta.modo, cor: paleta.cor }
+    : null;
 }
 
 function nomeFavorito(f) {
@@ -61,7 +63,7 @@ function alternarFavorito() {
       ? lista.filter(function (f) {
           return !mesmoFavorito(f, atual);
         })
-      : lista.concat(atual)
+      : lista.concat(atual),
   );
   atualizarMenuTema();
 }
@@ -71,7 +73,14 @@ function aplicarFavorito(f) {
   aplicarPaleta(f.modo, f.cor);
 }
 
-function criarLinhaTema(rotulo, corAmostra, atributo, valor, pressionado, indiceRemover) {
+function criarLinhaTema(
+  rotulo,
+  corAmostra,
+  atributo,
+  valor,
+  pressionado,
+  indiceRemover,
+) {
   var linha = document.createElement("div");
   var botao = document.createElement("button");
   var amostra = document.createElement("span");
@@ -108,7 +117,9 @@ function atualizarMenuTema() {
   var atual = favoritoAtual();
   var favoritos = lerFavoritos();
   var lista = document.getElementById("listaTemas");
-  var cor = paleta ? PALETAS_CORES[paleta.cor].acento : TEMAS[estadoTema.tema].cor;
+  var cor = paleta
+    ? PALETAS_CORES[paleta.cor].acento
+    : TEMAS[estadoTema.tema].cor;
 
   nome.textContent = atual ? nomeFavorito(atual) : TEMAS[estadoTema.tema].nome;
   document.getElementById("amostraTema").style.background = cor;
@@ -116,20 +127,39 @@ function atualizarMenuTema() {
   lista.innerHTML = "";
   Object.keys(TEMAS).forEach(function (chave) {
     lista.appendChild(
-      criarLinhaTema(TEMAS[chave].nome, TEMAS[chave].cor, "tema", chave, !paleta && chave === estadoTema.tema)
+      criarLinhaTema(
+        TEMAS[chave].nome,
+        TEMAS[chave].cor,
+        "tema",
+        chave,
+        !paleta && chave === estadoTema.tema,
+      ),
     );
   });
   favoritos.forEach(function (f, i) {
     lista.appendChild(
-      criarLinhaTema(nomeFavorito(f), PALETAS_CORES[f.cor].acento, "favorito", i, !!atual && mesmoFavorito(f, atual), i)
+      criarLinhaTema(
+        nomeFavorito(f),
+        PALETAS_CORES[f.cor].acento,
+        "favorito",
+        i,
+        !!atual && mesmoFavorito(f, atual),
+        i,
+      ),
     );
   });
 
   document.querySelectorAll("[data-modo]").forEach(function (botao) {
-    botao.setAttribute("aria-pressed", !!paleta && botao.dataset.modo === paleta.modo);
+    botao.setAttribute(
+      "aria-pressed",
+      !!paleta && botao.dataset.modo === paleta.modo,
+    );
   });
   document.querySelectorAll("[data-cor]").forEach(function (botao) {
-    botao.setAttribute("aria-pressed", !!paleta && botao.dataset.cor === paleta.cor);
+    botao.setAttribute(
+      "aria-pressed",
+      !!paleta && botao.dataset.cor === paleta.cor,
+    );
   });
 
   var botaoFavoritar = document.getElementById("botaoFavoritar");
@@ -139,7 +169,9 @@ function atualizarMenuTema() {
       return mesmoFavorito(f, atual);
     });
   botaoFavoritar.hidden = !paleta;
-  botaoFavoritar.textContent = jaFavorito ? "★ Remover dos favoritos" : "☆ Favoritar este tema";
+  botaoFavoritar.textContent = jaFavorito
+    ? "★ Remover dos favoritos"
+    : "☆ Favoritar este tema";
 }
 
 function montarMenuTema() {
@@ -193,7 +225,9 @@ function montarMenuTema() {
     fechar();
   });
 
-  document.getElementById("botaoFavoritar").addEventListener("click", alternarFavorito);
+  document
+    .getElementById("botaoFavoritar")
+    .addEventListener("click", alternarFavorito);
 
   grupoModo.addEventListener("click", function (evento) {
     var botao = evento.target.closest("[data-modo]");
@@ -227,7 +261,7 @@ function carregarTema() {
   var cor = localStorage.getItem("paleta-cor");
 
   if (TEMAS[tema]) {
-    document.getElementById("linkTema").href = "tema-" + tema + ".css";
+    document.getElementById("linkTema").href = "styles/tema-" + tema + ".css";
     estadoTema.tema = tema;
   }
   if (MODOS_PALETA[modo] && PALETAS_CORES[cor]) {

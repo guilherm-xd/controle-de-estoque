@@ -115,7 +115,7 @@ function criarBotaoRemover(id) {
   const botao = document.createElement('button');
   botao.className = 'btn-icon btn-remover' + (id === idParaRemover ? ' armado' : '');
   botao.innerHTML = ICONE_LIXEIRA;
-  botao.dataset.tip = id === idParaRemover ? 'Tem certeza? Clique novamente' : 'Remover';
+  botao.dataset.tip = id === idParaRemover ? 'Tem certeza? Clique de novo' : 'Remover';
   botao.setAttribute('aria-label', botao.dataset.tip);
   botao.dataset.action = 'remover';
   botao.dataset.id = id;
@@ -172,9 +172,33 @@ function atualizarIndicadores() {
   statEstoqueBaixo.textContent = produtos.filter(estoqueBaixo).length;
 }
 
+function salvarDados() {
+  const atual = estoqueAtivo();
+  atual.produtos = produtos;
+  atual.proximoId = proximoId;
+
+  localStorage.setItem('estoques', JSON.stringify({ estoques, estoqueAtivoId, proximoIdEstoque }));
+}
+
+function carregarDados() {
+  try {
+    const salvo = JSON.parse(localStorage.getItem('estoques'));
+    if (!salvo || !Array.isArray(salvo.estoques) || salvo.estoques.length === 0) return;
+
+    estoques = salvo.estoques;
+    proximoIdEstoque = salvo.proximoIdEstoque;
+    estoqueAtivoId = estoques.some(e => e.id === salvo.estoqueAtivoId)
+      ? salvo.estoqueAtivoId
+      : estoques[0].id;
+  } catch (erro) {
+    localStorage.removeItem('estoques');
+  }
+}
+
 function atualizarTela() {
   renderizarLista();
   atualizarIndicadores();
+  salvarDados();
 }
 
 
@@ -303,6 +327,7 @@ function salvarTitulo() {
 
   estoqueAtivo().nome = nome;
   renderizarAbas();
+  salvarDados();
 }
 
 btnEditarTitulo.addEventListener('click', () => {
@@ -518,5 +543,5 @@ resizer.addEventListener('keydown', evento => {
 });
 
 
-renderizarAbas();
-atualizarTela();
+carregarDados();
+carregarEstoqueAtivo();

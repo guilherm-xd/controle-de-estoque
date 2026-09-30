@@ -1,39 +1,39 @@
 :root {
-  --color-bg: #F2F4F1;
-  --color-surface: #FFFFFF;
-  --color-ink: #1C2321;
-  --color-ink-soft: #5B6660;
-  --color-border: #DCE0D9;
-  --color-field: #FCFDFC;
-  --color-row-hover: #F7F9F6;
+  --corFundo: #F2F4F1;
+  --corSuperficie: #FFFFFF;
+  --corTexto: #1C2321;
+  --corTextoSuave: #5B6660;
+  --corBorda: #DCE0D9;
+  --corCampo: #FCFDFC;
+  --corLinhaHover: #F7F9F6;
 
-  --color-primary: #1F5C4F;
-  --color-primary-dark: #163F37;
-  --color-primary-hover: #163F37;
-  --color-primary-soft: #E4EEEB;
-  --color-primary-text: #163F37;
+  --corPrimaria: #1F5C4F;
+  --corPrimariaEscura: #163F37;
+  --corPrimariaHover: #163F37;
+  --corPrimariaSuave: #E4EEEB;
+  --corPrimariaTexto: #163F37;
 
-  --color-warn: #8A5A1E;
-  --color-warn-bg: #F7ECD9;
-  --color-warn-border: #E4C68F;
-  --color-danger: #B3261E;
-  --color-danger-text: #B3261E;
-  --color-danger-bg: #FBE4E2;
-  --color-danger-border: #EFA9A4;
+  --corAlerta: #8A5A1E;
+  --corAlertaFundo: #F7ECD9;
+  --corAlertaBorda: #E4C68F;
+  --corPerigo: #B3261E;
+  --corPerigoTexto: #B3261E;
+  --corPerigoFundo: #FBE4E2;
+  --corPerigoBorda: #EFA9A4;
 
-  --sb-text: #EFF4F2;
-  --sb-muted: #B9CBC4;
-  --sb-head: #DCE9E4;
-  --sb-legend: #CFE0D9;
-  --sb-line: #2C6559;
-  --sb-field: #1B4A40;
-  --sb-btn-border: #3C7365;
-  --sb-placeholder: #7FA098;
-  --sb-focus: #7FC9B4;
+  --barraTexto: #EFF4F2;
+  --barraApagado: #B9CBC4;
+  --barraTitulo: #DCE9E4;
+  --barraLegenda: #CFE0D9;
+  --barraLinha: #2C6559;
+  --barraCampo: #1B4A40;
+  --barraBordaBotao: #3C7365;
+  --barraMarcador: #7FA098;
+  --barraFoco: #7FC9B4;
 
-  --font-heading: "Newsreader", Georgia, serif;
-  --font-body: "Instrument Sans", "Segoe UI", sans-serif;
+  --fonteTitulo: "Newsreader", Georgia, serif;
+  --fonteCorpo: "Instrument Sans", "Segoe UI", sans-serif;
 
-  --radius: 8px;
-  --shadow-card: 0 1px 2px rgba(28, 35, 33, 0.06), 0 1px 1px rgba(28, 35, 33, 0.04);
+  --raio: 8px;
+  --sombraCartao: 0 1px 2px rgba(28, 35, 33, 0.06), 0 1px 1px rgba(28, 35, 33, 0.04);
 }

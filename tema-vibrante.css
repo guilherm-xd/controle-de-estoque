@@ -1,62 +1,62 @@
 :root {
-  --color-bg: #F4F3FF;
-  --color-surface: #FFFFFF;
-  --color-ink: #1E1B3A;
-  --color-ink-soft: #625F85;
-  --color-border: #DAD8F0;
-  --color-field: #FBFBFF;
-  --color-row-hover: #F1F0FF;
+  --corFundo: #F4F3FF;
+  --corSuperficie: #FFFFFF;
+  --corTexto: #1E1B3A;
+  --corTextoSuave: #625F85;
+  --corBorda: #DAD8F0;
+  --corCampo: #FBFBFF;
+  --corLinhaHover: #F1F0FF;
 
-  --color-primary: #4F46E5;
-  --color-primary-dark: #2E2A78;
-  --color-primary-hover: #3730A3;
-  --color-primary-soft: #E5E3FF;
-  --color-primary-text: #2E2A78;
+  --corPrimaria: #4F46E5;
+  --corPrimariaEscura: #2E2A78;
+  --corPrimariaHover: #3730A3;
+  --corPrimariaSuave: #E5E3FF;
+  --corPrimariaTexto: #2E2A78;
 
-  --color-warn: #C2410C;
-  --color-warn-bg: #FFEDD5;
-  --color-warn-border: #FDBA74;
-  --color-danger: #DC2626;
-  --color-danger-text: #B91C1C;
-  --color-danger-bg: #FEE2E2;
-  --color-danger-border: #FCA5A5;
+  --corAlerta: #C2410C;
+  --corAlertaFundo: #FFEDD5;
+  --corAlertaBorda: #FDBA74;
+  --corPerigo: #DC2626;
+  --corPerigoTexto: #B91C1C;
+  --corPerigoFundo: #FEE2E2;
+  --corPerigoBorda: #FCA5A5;
 
-  --sb-text: #F1F0FF;
-  --sb-muted: #C1BEF0;
-  --sb-head: #E4E2FF;
-  --sb-legend: #D6D3FA;
-  --sb-line: #443F99;
-  --sb-field: #241F66;
-  --sb-btn-border: #5D57B8;
-  --sb-placeholder: #8683C9;
-  --sb-focus: #A5B4FC;
+  --barraTexto: #F1F0FF;
+  --barraApagado: #C1BEF0;
+  --barraTitulo: #E4E2FF;
+  --barraLegenda: #D6D3FA;
+  --barraLinha: #443F99;
+  --barraCampo: #241F66;
+  --barraBordaBotao: #5D57B8;
+  --barraMarcador: #8683C9;
+  --barraFoco: #A5B4FC;
 
-  --font-heading: "Bricolage Grotesque", "Segoe UI", sans-serif;
-  --font-body: "Familjen Grotesk", "Segoe UI", sans-serif;
+  --fonteTitulo: "Bricolage Grotesque", "Segoe UI", sans-serif;
+  --fonteCorpo: "Familjen Grotesk", "Segoe UI", sans-serif;
 
-  --radius: 14px;
-  --shadow-card: 0 6px 18px rgba(79, 70, 229, 0.10);
+  --raio: 14px;
+  --sombraCartao: 0 6px 18px rgba(79, 70, 229, 0.10);
 }
 
-.sidebar {
-  background: linear-gradient(180deg, var(--sidebar-top, #3B34B8) 0%, var(--color-primary-dark) 100%);
+.barraLateral {
+  background: linear-gradient(180deg, var(--topoBarraLateral, #3B34B8) 0%, var(--corPrimariaEscura) 100%);
 }
 
-.brand-mark {
+.marcaLogo {
   border-radius: 50%;
 }
 
-.btn,
-.badge,
-.view-toggle {
+.botao,
+.selo,
+.alternadorVisao {
   border-radius: 999px;
 }
 
-.panel,
-.stat-card {
+.painel,
+.cartaoEstatistica {
   border-color: transparent;
 }
 
-.stat-value {
+.valorEstatistica {
   font-weight: 700;
 }

@@ -23,15 +23,30 @@ function criarCelula(texto) {
 function criarLinha(produto) {
   const criarTR = document.createElement("tr");
   criarTR.appendChild(criarCelula(produto.nome));
-  criarTR.appendChild(criarCelula(produto.categoria));
+  criarTR.appendChild(criarCelula(produto.categoria || "-"));
   criarTR.appendChild(criarCelula(produto.quantidade));
   criarTR.appendChild(criarCelula(formatarPreco(produto.preco)));
+  const tdStatus = document.createElement("td");
+  const selo = document.createElement("span");
+  if (produto.quantidade === 0) {
+    selo.className = "selo seloZero";
+    selo.textContent = "Sem estoque";
+  } else if (estoqueBaixo(produto)) {
+    selo.className = "selo seloBaixo";
+    selo.textContent = "Estoque baixo";
+  } else {
+    selo.className = "selo seloOk";
+    selo.textContent = "Em estoque";
+  }
+  tdStatus.appendChild(selo);
+  criarTR.appendChild(tdStatus);
+  criarTR.appendChild(criarCelula(formatarPreco(produto.preco * produto.quantidade)));
   return criarTR;
 }
 
 function renderizarLista() {
-    listaProdutos.innerHTML = ""
-    produtos.forEach((produto) => {
-        listaProdutos.appendChild(criarLinha(produto))
-    })
+  listaProdutos.innerHTML = "";
+  produtos.forEach((produto) => {
+    listaProdutos.appendChild(criarLinha(produto));
+  });
 }

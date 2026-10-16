@@ -1,32 +1,116 @@
-var TEMAS = {
+const temas = {
   classico: { nome: "Clássico verde", cor: "#1f5c4f" },
   escuro: { nome: "Escuro", cor: "#2a8570" },
   vibrante: { nome: "Vibrante", cor: "#4f46e5" },
 };
 
-var MODOS_PALETA = {
+const modosPaleta = {
   claro: { nome: "Claro", texto: "#1f2523", suave: "#5b6660" },
   escuro: { nome: "Escuro", texto: "#e6edf3", suave: "#8b949e" },
 };
 
-var PALETAS_CORES = {
-  azul: { nome: "Azul", acento: "#33aaff", acentoTexto: "#cceaff", presente: "#d4a229", cursor: "#85ccff" },
-  abismo: { nome: "Abismo", acento: "#3377ff", acentoTexto: "#ccddff", presente: "#d29922", cursor: "#85adff" },
-  verde: { nome: "Verde", acento: "#32b85f", acentoTexto: "#d5f7df", presente: "#d9a52e", cursor: "#62d985" },
-  ferrugem: { nome: "Ferrugem", acento: "#d36b2d", acentoTexto: "#ffe0c8", presente: "#c99a3e", cursor: "#ff9a5c" },
-  vermelho: { nome: "Vermelho", acento: "#e53935", acentoTexto: "#ffe3e1", presente: "#e5a62a", cursor: "#ff6b66" },
-  laranja: { nome: "Laranja", acento: "#f27622", acentoTexto: "#ffe2cc", presente: "#d4a52d", cursor: "#ff9b57" },
-  cobalto: { nome: "Indigo", acento: "#3344ff", acentoTexto: "#ccd0ff", presente: "#d6a43a", cursor: "#858fff" },
-  violeta: { nome: "Violeta", acento: "#8833ff", acentoTexto: "#e1ccff", presente: "#d7a33b", cursor: "#b885ff" },
-  cinza: { nome: "Cinza", acento: "#a8b0bb", acentoTexto: "#f0f3f6", presente: "#d6a23c", cursor: "#c4ccd6" },
-  rosa: { nome: "Rosa", acento: "#ff6fae", acentoTexto: "#ffe3f0", presente: "#d8a33c", cursor: "#ff96c5" },
-  agua: { nome: "Ciano", acento: "#18b9d2", acentoTexto: "#d7faff", presente: "#d8a23c", cursor: "#55d7eb" },
-  verdeagua: { nome: "Verde agua", acento: "#24d6ad", acentoTexto: "#d8fff5", presente: "#d7a63a", cursor: "#61edce" },
-  personalizada: { nome: "Personalizada", acento: "#8833ff", acentoTexto: "#e1ccff", presente: "#d7a33b", cursor: "#b885ff" },
-  amarelo: { nome: "Amarelo", acento: "#f0c94a", acentoTexto: "#fff2bd", presente: "#d99424", cursor: "#ffe07a" },
+const coresPaleta = {
+  azul: {
+    nome: "Azul",
+    acento: "#33aaff",
+    acentoTexto: "#cceaff",
+    presente: "#d4a229",
+    cursor: "#85ccff",
+  },
+  abismo: {
+    nome: "Abismo",
+    acento: "#3377ff",
+    acentoTexto: "#ccddff",
+    presente: "#d29922",
+    cursor: "#85adff",
+  },
+  verde: {
+    nome: "Verde",
+    acento: "#32b85f",
+    acentoTexto: "#d5f7df",
+    presente: "#d9a52e",
+    cursor: "#62d985",
+  },
+  ferrugem: {
+    nome: "Ferrugem",
+    acento: "#d36b2d",
+    acentoTexto: "#ffe0c8",
+    presente: "#c99a3e",
+    cursor: "#ff9a5c",
+  },
+  vermelho: {
+    nome: "Vermelho",
+    acento: "#e53935",
+    acentoTexto: "#ffe3e1",
+    presente: "#e5a62a",
+    cursor: "#ff6b66",
+  },
+  laranja: {
+    nome: "Laranja",
+    acento: "#f27622",
+    acentoTexto: "#ffe2cc",
+    presente: "#d4a52d",
+    cursor: "#ff9b57",
+  },
+  cobalto: {
+    nome: "Indigo",
+    acento: "#3344ff",
+    acentoTexto: "#ccd0ff",
+    presente: "#d6a43a",
+    cursor: "#858fff",
+  },
+  violeta: {
+    nome: "Violeta",
+    acento: "#8833ff",
+    acentoTexto: "#e1ccff",
+    presente: "#d7a33b",
+    cursor: "#b885ff",
+  },
+  cinza: {
+    nome: "Cinza",
+    acento: "#a8b0bb",
+    acentoTexto: "#f0f3f6",
+    presente: "#d6a23c",
+    cursor: "#c4ccd6",
+  },
+  rosa: {
+    nome: "Rosa",
+    acento: "#ff6fae",
+    acentoTexto: "#ffe3f0",
+    presente: "#d8a33c",
+    cursor: "#ff96c5",
+  },
+  agua: {
+    nome: "Ciano",
+    acento: "#18b9d2",
+    acentoTexto: "#d7faff",
+    presente: "#d8a23c",
+    cursor: "#55d7eb",
+  },
+  verdeagua: {
+    nome: "Verde agua",
+    acento: "#24d6ad",
+    acentoTexto: "#d8fff5",
+    presente: "#d7a63a",
+    cursor: "#61edce",
+  },
+  personalizada: {
+    nome: "Personalizada",
+    acento: "#8833ff",
+    acentoTexto: "#e1ccff",
+    presente: "#d7a33b",
+    cursor: "#b885ff",
+  },
+  amarelo: {
+    nome: "Amarelo",
+    acento: "#f0c94a",
+    acentoTexto: "#fff2bd",
+    presente: "#d99424",
+    cursor: "#ffe07a",
+  },
 };
 
-var ORDEM_CORES_PALETA = [
+const ordemPaletas = [
   "vermelho",
   "laranja",
   "amarelo",
@@ -41,7 +125,7 @@ var ORDEM_CORES_PALETA = [
   "cinza",
 ];
 
-var PALETAS_FUNDOS = {
+const fundosPaleta = {
   escuro: {
     azul: ["#071021", "#0d1830", "#213d73", "#12213f"],
     abismo: ["#0d1117", "#161b22", "#30363d", "#21262d"],
@@ -60,5 +144,5 @@ var PALETAS_FUNDOS = {
   },
 };
 
-var estadoTema = { tema: "classico", paleta: null };
-var varsDaPaleta = [];
+let estadoTema = { tema: "classico", paleta: null };
+let varPaleta = [];

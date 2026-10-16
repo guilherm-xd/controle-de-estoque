@@ -40,7 +40,9 @@ function criarLinha(produto) {
   }
   tdStatus.appendChild(selo);
   criarTR.appendChild(tdStatus);
-  criarTR.appendChild(criarCelula(formatarPreco(produto.preco * produto.quantidade)));
+  criarTR.appendChild(
+    criarCelula(formatarPreco(produto.preco * produto.quantidade)),
+  );
   return criarTR;
 }
 
@@ -49,4 +51,21 @@ function renderizarLista() {
   produtos.forEach((produto) => {
     listaProdutos.appendChild(criarLinha(produto));
   });
+}
+
+function atualizarIndicadores() {
+  animarNumero(estatisticaTotalProdutos, produtos.length);
+  animarNumero(
+    estatisticaTotalItens,
+    produtos.reduce((total, produto) => total + produto.quantidade, 0),
+  );
+  animarNumero(estatisticaEstoqueBaixo, produtos.filter(estoqueBaixo).length);
+  animarNumero(
+    estatisticaValorTotal,
+    produtos.reduce(
+      (total, produto) => total + produto.quantidade * produto.preco,
+      0,
+    ),
+    formatarPreco,
+  );
 }

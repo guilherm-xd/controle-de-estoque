@@ -28,3 +28,10 @@ function criarLinha(produto) {
   criarTR.appendChild(criarCelula(formatarPreco(produto.preco)));
   return criarTR;
 }
+
+function renderizarLista() {
+    listaProdutos.innerHTML = ""
+    produtos.forEach((produto) => {
+        listaProdutos.appendChild(criarLinha(produto))
+    })
+}

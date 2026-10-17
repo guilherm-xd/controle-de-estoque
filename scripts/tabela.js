@@ -56,13 +56,32 @@ function criarLinha(produto) {
   return criarTR;
 }
 
-function renderizarLista() {
-  listaProdutos.innerHTML = "";
-  produtos.forEach((produto) => {
-    listaProdutos.appendChild(criarLinha(produto));
+function filtrarProdutos() {
+  const textoBusca = termoBusca.trim().toLowerCase();
+  let resultadoProduto = produtos.filter((produto) => {
+    return (
+      produto.nome.toLowerCase().includes(textoBusca) ||
+      (produto.categoria || "").toLowerCase().includes(textoBusca)
+    );
   });
-  boasVindas.hidden = produtos.length > 0;
-  estadoVazio.hidden =
+  resultadoProduto = resultadoProduto.filter((produto) => {
+    return filtroAtual.min === null || produto.quantidade >= filtroAtual.min;
+  });
+
+  resultadoProduto = resultadoProduto.filter((produto) => {
+    return filtroAtual.max === null || produto.quantidade <= filtroAtual.max;
+  });
+  return resultadoProduto;
+}
+
+function renderizarLista() {
+    const resultadoFiltro = filtrarProdutos()
+    listaProdutos.innerHTML = "";
+    resultadoFiltro.forEach((produto) => {
+        listaProdutos.appendChild(criarLinha(produto));
+    });
+    boasVindas.hidden = produtos.length > 0;
+    estadoVazio.hidden =
     listaProdutos.children.length > 0 || produtos.length === 0;
 }
 

@@ -45,8 +45,6 @@ toast.setAttribute("role", "status");
 toast.setAttribute("aria-live", "polite");
 document.body.appendChild(toast);
 
-let timerToast;
-
 let ultimoEstado = null;
 let pilhaDesfazer = [];
 let pilhaRefazer = [];
@@ -75,9 +73,7 @@ function mostrarToast(mensagem, guardar = true) {
   toast.textContent = mensagem;
   toast.classList.add("visivel");
 
-  clearTimeout(timerToast);
-
-  timerToast = setTimeout(() => {
+  setTimeout(() => {
     toast.classList.remove("visivel");
   }, 2600);
 }
@@ -102,69 +98,36 @@ function salvarDados() {
   estoque.produtos = produtos;
   estoque.proximoId = proximoId;
   registrarEstado();
-  try {
-    localStorage.setItem(
-      "estoques",
-      JSON.stringify({
-        estoques: estoques,
-        estoqueAtivoId: estoqueAtivoId,
-        proximoIdEstoque: proximoIdEstoque,
-      }),
-    );
-  } catch (erro) {
-    console.error("Não foi possível salvar:", erro);
-  }
+
+  localStorage.setItem(
+    "estoques",
+    JSON.stringify({
+      estoques: estoques,
+      estoqueAtivoId: estoqueAtivoId,
+      proximoIdEstoque: proximoIdEstoque,
+    }),
+  );
 }
 
 function carregarDados() {
-  try {
-    const textoSalvo = localStorage.getItem("estoques");
+  const textoSalvo = localStorage.getItem("estoques");
 
-    if (textoSalvo === null) {
-      return;
-    }
-
-    const dados = JSON.parse(textoSalvo);
-
-    if (dados && Array.isArray(dados.estoques) && dados.estoques.length > 0) {
-      estoques = dados.estoques;
-      estoqueAtivoId = estoques.some((e) => e.id === dados.estoqueAtivoId)
-        ? dados.estoqueAtivoId
-        : estoques[0].id;
-      proximoIdEstoque = dados.proximoIdEstoque;
-
-      produtos = estoqueAtivo().produtos;
-      proximoId = estoqueAtivo().proximoId;
-    }
-  } catch (erro) {
-    console.error("Não foi possível carregar:", erro);
-    localStorage.removeItem("estoques");
-  }
-}
-
-function animarNumero(elemento, alvo, formatar = (n) => Math.round(n)) {
-  const de = Number(elemento.dataset.valor || 0);
-  elemento.dataset.valor = alvo;
-  cancelAnimationFrame(elemento.quadro);
-
-  if (de === alvo || reduzirMovimento()) {
-    elemento.textContent = formatar(alvo);
+  if (textoSalvo === null) {
     return;
   }
 
-  const inicio = performance.now();
-  const duracao = 450;
-  const passo = (agora) => {
-    const t = Math.min(1, (agora - inicio) / duracao);
-    const suave = 1 - Math.pow(1 - t, 3);
-    elemento.textContent = formatar(t < 1 ? de + (alvo - de) * suave : alvo);
-    if (t < 1) elemento.quadro = requestAnimationFrame(passo);
-  };
-  elemento.quadro = requestAnimationFrame(passo);
-}
+  const dados = JSON.parse(textoSalvo);
 
-function reduzirMovimento() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (dados && Array.isArray(dados.estoques) && dados.estoques.length > 0) {
+    estoques = dados.estoques;
+    estoqueAtivoId = estoques.some((e) => e.id === dados.estoqueAtivoId)
+      ? dados.estoqueAtivoId
+      : estoques[0].id;
+    proximoIdEstoque = dados.proximoIdEstoque;
+
+    produtos = estoqueAtivo().produtos;
+    proximoId = estoqueAtivo().proximoId;
+  }
 }
 
 function registrarEstado() {
@@ -180,9 +143,9 @@ function registrarEstado() {
   }
   ultimoEstado = { foto: foto, ativo: estoqueAtivoId };
 }
+
 function atualizarTela() {
   renderizarLista();
   atualizarIndicadores();
-  renderizarGrafico();
   salvarDados();
 }

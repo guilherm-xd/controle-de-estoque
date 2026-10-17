@@ -28,12 +28,69 @@ function criarCelula(texto) {
   return criarTD;
 }
 
+function formatarPercentual(valor) {
+  return String(valor).replace(".", ",");
+}
+
+function criarCelulaPreco(produto) {
+  const criarDesconto = document.createElement("td");
+  if (!produto.desconto) {
+    criarDesconto.textContent = formatarPreco(produto.preco);
+    return criarDesconto;
+  }
+  const riscado = document.createElement("s");
+  const span1 = document.createElement("span");
+  const span2 = document.createElement("span");
+
+  riscado.className = "precoAntigo";
+  span1.className = "precoNovo";
+  span2.className = "etiquetaDesconto";
+
+  riscado.textContent = formatarPreco(produto.precoOriginal);
+  span1.textContent = formatarPreco(produto.preco);
+  span2.textContent = "-" + formatarPercentual(produto.desconto) + "%";
+
+  criarDesconto.appendChild(riscado);
+  criarDesconto.appendChild(span1);
+  criarDesconto.appendChild(span2);
+
+  return criarDesconto;
+}
+
+function criarCelulaQuantidade(produto) {
+  const celula = document.createElement("td");
+  const botaoMenos = document.createElement("button");
+  const botaoMais = document.createElement("button");
+  const valor = document.createElement("span");
+
+  botaoMenos.className = "botaoQuantidade";
+  botaoMenos.textContent = "−";
+  botaoMenos.dataset.acao = "menos";
+  botaoMenos.dataset.id = produto.id;
+  botaoMenos.disabled = produto.quantidade === 0;
+  botaoMenos.setAttribute("aria-label", "Diminuir quantidade");
+
+  botaoMais.className = "botaoQuantidade";
+  botaoMais.textContent = "+";
+  botaoMais.dataset.acao = "mais";
+  botaoMais.dataset.id = produto.id;
+  botaoMais.setAttribute("aria-label", "Aumentar quantidade");
+
+  valor.className = "valorQuantidade";
+  valor.textContent = produto.quantidade;
+
+  celula.appendChild(botaoMenos);
+  celula.appendChild(valor);
+  celula.appendChild(botaoMais);
+  return celula;
+}
+
 function criarLinha(produto) {
   const criarTR = document.createElement("tr");
   criarTR.appendChild(criarCelula(produto.nome));
   criarTR.appendChild(criarCelula(produto.categoria || "-"));
-  criarTR.appendChild(criarCelula(produto.quantidade));
-  criarTR.appendChild(criarCelula(formatarPreco(produto.preco)));
+  criarTR.appendChild(criarCelulaQuantidade(produto));
+  criarTR.appendChild(criarCelulaPreco(produto));
   const tdStatus = document.createElement("td");
   const selo = document.createElement("span");
   if (produto.quantidade === 0) {

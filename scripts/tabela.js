@@ -336,3 +336,88 @@ function desenharColunas(entradas, maior) {
   });
   graficoCategorias.appendChild(area);
 }
+
+function desenharPizza(entradas, rosca) {
+  const fatias = entradas.filter((entrada) => entrada[1] > 0);
+  const total = fatias.reduce((soma, entrada) => soma + entrada[1], 0);
+
+  if (total === 0) {
+    graficoCategorias.textContent = "Nenhum item em estoque para exibir.";
+    return;
+  }
+
+  let raio;
+  let espessura;
+  if (rosca) {
+    raio = 38;
+    espessura = 22;
+  } else {
+    raio = 25;
+    espessura = 50;
+  }
+  const volta = 2 * Math.PI * raio;
+  const svg = document.createElementNS(svgNs, "svg");
+  const legenda = document.createElement("ul");
+  const envolucro = document.createElement("div");
+  let acumulado = 0;
+
+  svg.setAttribute("viewBox", "0 0 100 100");
+  svg.setAttribute("class", "svgPizza");
+  svg.setAttribute("role", "img");
+  svg.setAttribute("aria-label", "Itens por categoria");
+  legenda.className = "legendaGrafico";
+  envolucro.className = "pizzaGrafico";
+
+  fatias.forEach(([categoria, quantidade], indice) => {
+    const comprimento = (quantidade / total) * volta;
+    const percentual = String(
+      Math.round((quantidade / total) * 1000) / 10,
+    ).replace(".", ",");
+    const circulo = document.createElementNS(svgNs, "circle");
+    const dica = document.createElementNS(svgNs, "title");
+    const item = document.createElement("li");
+    const ponto = document.createElement("span");
+    const nome = document.createElement("span");
+    const valor = document.createElement("span");
+
+    circulo.setAttribute("cx", 50);
+    circulo.setAttribute("cy", 50);
+    circulo.setAttribute("r", raio);
+    circulo.setAttribute("fill", "none");
+    circulo.setAttribute("transform", "rotate(-90 50 50)");
+    circulo.style.stroke = corDaFatia(indice);
+    circulo.style.strokeWidth = espessura;
+    circulo.style.strokeDasharray = comprimento + " " + (volta - comprimento);
+    circulo.style.strokeDashoffset = -acumulado;
+    dica.textContent = categoria + ": " + quantidade + " (" + percentual + "%)";
+    circulo.appendChild(dica);
+    svg.appendChild(circulo);
+    acumulado += comprimento;
+
+    ponto.className = "pontoLegenda";
+    ponto.style.background = corDaFatia(indice);
+    nome.className = "nomeLegenda";
+    nome.textContent = categoria;
+    valor.className = "valorLegenda";
+    valor.textContent = quantidade + " (" + percentual + "%)";
+    item.appendChild(ponto);
+    item.appendChild(nome);
+    item.appendChild(valor);
+    legenda.appendChild(item);
+  });
+
+  if (rosca) {
+    const texto = document.createElementNS(svgNs, "text");
+    texto.setAttribute("x", 50);
+    texto.setAttribute("y", 50);
+    texto.setAttribute("text-anchor", "middle");
+    texto.setAttribute("dominant-baseline", "central");
+    texto.setAttribute("class", "textoRosca");
+    texto.textContent = total;
+    svg.appendChild(texto);
+  }
+
+  envolucro.appendChild(svg);
+  envolucro.appendChild(legenda);
+  graficoCategorias.appendChild(envolucro);
+}

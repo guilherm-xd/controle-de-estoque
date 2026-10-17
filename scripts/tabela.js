@@ -264,3 +264,23 @@ function criarBotaoTirarDesconto(id) {
   botaoDesfazer.dataset.id = id;
   return botaoDesfazer;
 }
+
+const coresGrafico = [
+  "var(--corPrimaria)",
+  "#e8a33d",
+  "#d9534f",
+  "#2fb37a",
+  "#9b59b6",
+  "#17a2b8",
+  "#e67e22",
+  "#ec6fa8",
+  "#8d6e63",
+  "#7f8c8d",
+];
+
+const svgNs = "http://www.w3.org/2000/svg";
+
+function corDaFatia(indice) {
+  return coresGrafico[indice % coresGrafico.length];
+}
+

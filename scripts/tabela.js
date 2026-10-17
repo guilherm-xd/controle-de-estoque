@@ -22,6 +22,12 @@ const iconeLapis =
 const iconeDelete =
   '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 5h14M8 5V3h4v2M5 5l1 12h8l1-12M8.5 8.5v5M11.5 8.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+const iconeTrasferir =
+  '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M3 7h13M12.5 3.5L16 7l-3.5 3.5M17 13H4M7.5 9.5L4 13l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+const iconeDesfazer =
+  '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M5 8h7a3.5 3.5 0 010 7H8M5 8l3-3M5 8l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
 function criarCelula(texto) {
   const criarTD = document.createElement("td");
   criarTD.textContent = texto;

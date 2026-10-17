@@ -309,3 +309,30 @@ function desenharBarras(entradas, maior) {
   });
 }
 
+function desenharColunas(entradas, maior) {
+  const area = document.createElement("div");
+  area.className = "colunasGrafico";
+
+  entradas.forEach(([categoria, quantidade]) => {
+    const coluna = document.createElement("div");
+    const valor = document.createElement("span");
+    const barra = document.createElement("div");
+    const nome = document.createElement("span");
+
+    coluna.className = "colunaGrafico";
+    valor.className = "valorColuna";
+    valor.textContent = quantidade;
+    barra.className = "barraColuna";
+    barra.style.height =
+      Math.max(4, Math.round((quantidade / maior) * 150)) + "px";
+    nome.className = "nomeColuna";
+    nome.textContent = categoria;
+    nome.title = categoria;
+
+    coluna.appendChild(valor);
+    coluna.appendChild(barra);
+    coluna.appendChild(nome);
+    area.appendChild(coluna);
+  });
+  graficoCategorias.appendChild(area);
+}

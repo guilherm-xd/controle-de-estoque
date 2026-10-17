@@ -421,3 +421,29 @@ function desenharPizza(entradas, rosca) {
   envolucro.appendChild(legenda);
   graficoCategorias.appendChild(envolucro);
 }
+
+function renderizarGrafico() {
+  const totais = produtos.reduce((acc, produto) => {
+    const categoria = produto.categoria || "Sem categoria";
+    acc[categoria] = (acc[categoria] || 0) + produto.quantidade;
+    return acc;
+  }, {});
+  const entradas = Object.entries(totais).sort((a, b) => b[1] - a[1]);
+  const maior = Math.max(1, ...entradas.map((entrada) => entrada[1]));
+
+  painelGrafico.hidden = entradas.length === 0;
+  graficoCategorias.innerHTML = "";
+  botoesEstiloGrafico.forEach((botao) => {
+    botao.setAttribute("aria-pressed", botao.dataset.grafico === estiloGrafico);
+  });
+
+  if (estiloGrafico === "colunas") {
+    desenharColunas(entradas, maior);
+  } else if (estiloGrafico === "pizza") {
+    desenharPizza(entradas, false);
+  } else if (estiloGrafico === "rosca") {
+    desenharPizza(entradas, true);
+  } else {
+    desenharBarras(entradas, maior);
+  }
+}

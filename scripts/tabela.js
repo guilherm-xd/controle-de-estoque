@@ -284,3 +284,28 @@ function corDaFatia(indice) {
   return coresGrafico[indice % coresGrafico.length];
 }
 
+function desenharBarras(entradas, maior) {
+  entradas.forEach(([categoria, quantidade]) => {
+    const linha = document.createElement("div");
+    const nome = document.createElement("span");
+    const trilho = document.createElement("div");
+    const barra = document.createElement("div");
+    const valor = document.createElement("span");
+
+    linha.className = "linhaBarra";
+    nome.className = "nomeBarra";
+    nome.textContent = categoria;
+    trilho.className = "trilhoBarra";
+    barra.className = "barra";
+    barra.style.width = (quantidade / maior) * 100 + "%";
+    valor.className = "valorBarra";
+    valor.textContent = quantidade;
+
+    trilho.appendChild(barra);
+    linha.appendChild(nome);
+    linha.appendChild(trilho);
+    linha.appendChild(valor);
+    graficoCategorias.appendChild(linha);
+  });
+}
+

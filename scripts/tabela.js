@@ -236,3 +236,25 @@ function criarBotaoDeletar(id) {
   botaoDeletar.dataset.id = id;
   return botaoDeletar;
 }
+
+function criarBotaoTransferir(id) {
+  const botaoTransferir = document.createElement("button");
+  botaoTransferir.className = "botaoIcone";
+  botaoTransferir.innerHTML = iconeTransferir;
+  botaoTransferir.dataset.dica = "Mover para outro estoque";
+  botaoTransferir.setAttribute("aria-label", "transferir");
+  botaoTransferir.dataset.acao = "transferir";
+  botaoTransferir.dataset.id = id;
+  return botaoTransferir;
+}
+
+function criarBotaoTirarDesconto(id) {
+  const botaoDesfazer = document.createElement("button");
+  botaoDesfazer.className = "botaoIcone";
+  botaoDesfazer.innerHTML = iconeDesfazer;
+  botaoDesfazer.dataset.dica = "Remover desconto";
+  botaoDesfazer.setAttribute("aria-label", "Remover desconto");
+  botaoDesfazer.dataset.acao = "tirarDesconto";
+  botaoDesfazer.dataset.id = id;
+  return botaoDesfazer;
+}

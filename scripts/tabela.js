@@ -116,6 +116,12 @@ function criarLinha(produto) {
   );
   const tdAcoes = document.createElement("td");
   tdAcoes.appendChild(criarBotaoEditar(produto.id));
+  if (produto.desconto) {
+    tdAcoes.appendChild(criarBotaoTirarDesconto(produto.id));
+  }
+  if (estoques.length > 1) {
+    tdAcoes.appendChild(criarBotaoTransferir(produto.id));
+  }
   tdAcoes.appendChild(criarBotaoDeletar(produto.id));
   criarTR.appendChild(tdAcoes);
   return criarTR;

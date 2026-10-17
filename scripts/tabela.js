@@ -51,8 +51,8 @@ function criarLinha(produto) {
   );
   const tdAcoes = document.createElement("td");
   tdAcoes.appendChild(criarBotaoEditar(produto.id));
-  tdAcoes.appendChild(criarBotaoDeletar(produto.id))
-  criarTR.appendChild(tdAcoes)
+  tdAcoes.appendChild(criarBotaoDeletar(produto.id));
+  criarTR.appendChild(tdAcoes);
   return criarTR;
 }
 
@@ -67,19 +67,17 @@ function renderizarLista() {
 }
 
 function atualizarIndicadores() {
-  animarNumero(estatisticaTotalProdutos, produtos.length);
-  animarNumero(
-    estatisticaTotalItens,
-    produtos.reduce((total, produto) => total + produto.quantidade, 0),
+  estatisticaTotalProdutos.textContent = produtos.length;
+  estatisticaTotalItens.textContent = produtos.reduce(
+    (total, produto) => total + produto.quantidade,
+    0,
   );
-  animarNumero(estatisticaEstoqueBaixo, produtos.filter(estoqueBaixo).length);
-  animarNumero(
-    estatisticaValorTotal,
+  estatisticaEstoqueBaixo.textContent = produtos.filter(estoqueBaixo).length;
+  estatisticaValorTotal.textContent = formatarPreco(
     produtos.reduce(
       (total, produto) => total + produto.quantidade * produto.preco,
       0,
     ),
-    formatarPreco,
   );
 }
 

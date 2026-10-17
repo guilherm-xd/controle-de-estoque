@@ -14,6 +14,8 @@ const painelGrafico = document.getElementById("painelGrafico");
 const graficoCategorias = document.getElementById("graficoCategorias");
 const botoesEstiloGrafico = document.querySelectorAll(".botaoEstiloGrafico");
 
+const categoriaImpossivel = "Tung Tung do Mal";
+
 const iconeLapis =
   '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="M13.3 2.7l4 4L6.4 17.6H2.4v-4L13.3 2.7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
 
@@ -56,12 +58,42 @@ function criarLinha(produto) {
   return criarTR;
 }
 
+function preencherFiltroCategoria() {
+  let arrayNada = [];
+  produtos.forEach((produto) => {
+    const categoriaProduto = produto.categoria || categoriaImpossivel;
+    if (!arrayNada.includes(categoriaProduto)) {
+      arrayNada.push(categoriaProduto);
+    }
+  });
+  if (categoriaFiltro && !arrayNada.includes(categoriaFiltro)) {
+    categoriaFiltro = "";
+  }
+  filtroCategoria.innerHTML = "";
+  filtroCategoria.appendChild(new Option("Todas as categorias", ""));
+  arrayNada.forEach((categoria) => {
+    filtroCategoria.appendChild(
+      new Option(
+        categoria === categoriaImpossivel ? "Sem categoria" : categoria,
+        categoria,
+      ),
+    );
+  });
+  filtroCategoria.value = categoriaFiltro;
+}
+
 function filtrarProdutos() {
   const textoBusca = termoBusca.trim().toLowerCase();
   let resultadoProduto = produtos.filter((produto) => {
     return (
       produto.nome.toLowerCase().includes(textoBusca) ||
       (produto.categoria || "").toLowerCase().includes(textoBusca)
+    );
+  });
+  resultadoProduto = resultadoProduto.filter((produto) => {
+    return (
+      !categoriaFiltro ||
+      (produto.categoria || categoriaImpossivel) === categoriaFiltro
     );
   });
   resultadoProduto = resultadoProduto.filter((produto) => {
@@ -75,13 +107,14 @@ function filtrarProdutos() {
 }
 
 function renderizarLista() {
-    const resultadoFiltro = filtrarProdutos()
-    listaProdutos.innerHTML = "";
-    resultadoFiltro.forEach((produto) => {
-        listaProdutos.appendChild(criarLinha(produto));
-    });
-    boasVindas.hidden = produtos.length > 0;
-    estadoVazio.hidden =
+  preencherFiltroCategoria();
+  const resultadoFiltro = filtrarProdutos();
+  listaProdutos.innerHTML = "";
+  resultadoFiltro.forEach((produto) => {
+    listaProdutos.appendChild(criarLinha(produto));
+  });
+  boasVindas.hidden = produtos.length > 0;
+  estadoVazio.hidden =
     listaProdutos.children.length > 0 || produtos.length === 0;
 }
 

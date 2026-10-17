@@ -82,6 +82,14 @@ function preencherFiltroCategoria() {
   filtroCategoria.value = categoriaFiltro;
 }
 
+function valorDoCampo(produto, campo) {
+  if (campo === "total") {
+    return produto.quantidade * produto.preco;
+  } else {
+    return produto[campo];
+  }
+}
+
 function filtrarProdutos() {
   const textoBusca = termoBusca.trim().toLowerCase();
   let resultadoProduto = produtos.filter((produto) => {
@@ -103,7 +111,18 @@ function filtrarProdutos() {
   resultadoProduto = resultadoProduto.filter((produto) => {
     return filtroAtual.max === null || produto.quantidade <= filtroAtual.max;
   });
-  return resultadoProduto;
+  if (!ordem.campo) {
+    return resultadoProduto;
+  }
+  return resultadoProduto.sort((pro1, pro2) => {
+    const valor1 = valorDoCampo(pro1, ordem.campo);
+    const valor2 = valorDoCampo(pro2, ordem.campo);
+    if (typeof valor1 === "string") {
+      return valor1.localeCompare(valor2, "pt-BR") * ordem.dir;
+    } else {
+      return (valor1 - valor2) * ordem.dir;
+    }
+  });
 }
 
 function renderizarLista() {

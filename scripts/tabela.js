@@ -242,7 +242,7 @@ function criarBotaoTransferir(id) {
   botaoTransferir.className = "botaoIcone";
   botaoTransferir.innerHTML = iconeTransferir;
   botaoTransferir.dataset.dica = "Mover para outro estoque";
-  botaoTransferir.setAttribute("aria-label", "transferir");
+  botaoTransferir.setAttribute("aria-label", "Mover para outro estoque");
   botaoTransferir.dataset.acao = "transferir";
   botaoTransferir.dataset.id = id;
   return botaoTransferir;

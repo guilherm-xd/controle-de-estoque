@@ -10,3 +10,7 @@ const arquivoImportar = document.getElementById("arquivoImportar");
 
 const botaoReposicao = document.getElementById("botaoReposicao");
 const areaImpressao = document.getElementById("areaImpressao");
+function escaparCsv(valor) {
+  const texto = String(valor);
+  return /[";\n]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
+}

@@ -72,3 +72,7 @@ function lerFavoritos() {
     return [];
   }
 }
+
+function salvarFavoritos(lista) {
+  guardar("temas-favoritos", JSON.stringify(lista));
+}

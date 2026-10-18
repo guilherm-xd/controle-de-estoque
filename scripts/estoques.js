@@ -116,3 +116,21 @@ function novoEstoque() {
   trocarEstoque(id);
   mostrarToast(`"${nome}" criado`);
 }
+
+function excluirEstoque() {
+  if (estoques.length === 1) return;
+
+  if (!excluindoEstoque) {
+    excluindoEstoque = true;
+    botaoExcluirEstoque.classList.add("armado");
+    botaoExcluirEstoque.dataset.dica = "Clique de novo para excluir este estoque";
+    timerExcluir = setTimeout(desarmarExclusao, 3000);
+    return;
+  }
+
+  const indice = estoques.findIndex(e => e.id === estoqueAtivoId);
+  estoques = estoques.filter(e => e.id !== estoqueAtivoId);
+  estoqueAtivoId = estoques[Math.max(0, indice - 1)].id;
+  carregarEstoqueAtivo();
+  mostrarToast("Estoque excluído", false);
+}

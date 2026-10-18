@@ -108,3 +108,11 @@ function proximoNomeLivre() {
   while (estoques.some(e => e.nome === `Estoque ${numero}`)) numero++;
   return `Estoque ${numero}`;
 }
+
+function novoEstoque() {
+  const id = proximoIdEstoque++;
+  const nome = proximoNomeLivre();
+  estoques.push({ id, nome, produtos: [], proximoId: 1 });
+  trocarEstoque(id);
+  mostrarToast(`"${nome}" criado`);
+}

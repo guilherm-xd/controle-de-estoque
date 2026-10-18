@@ -65,3 +65,11 @@ function guardar(chave, valor) {
     else localStorage.setItem(chave, valor);
   } catch (erro) {}
 }
+
+function definirVars(vars) {
+  var raiz = document.documentElement;
+  varsDaPaleta = Object.keys(vars);
+  varsDaPaleta.forEach(function (prop) {
+    raiz.style.setProperty(prop, vars[prop]);
+  });
+}

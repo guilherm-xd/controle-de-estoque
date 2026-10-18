@@ -93,3 +93,12 @@ function carregarEstoqueAtivo() {
   atualizarTela();
   animarEntrada();
 }
+
+function trocarEstoque(id) {
+  const atual = estoqueAtivo();
+  atual.produtos = produtos;
+  atual.proximoId = proximoId;
+
+  estoqueAtivoId = id;
+  carregarEstoqueAtivo();
+}

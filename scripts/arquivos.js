@@ -76,3 +76,6 @@ function exportar() {
 document.getElementById("botaoExportar").addEventListener("click", () => {
   modalExportarFundo.hidden = false;
 });
+document.getElementById("botaoCancelarExportar").addEventListener("click", () => {
+  modalExportarFundo.hidden = true;
+});

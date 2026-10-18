@@ -73,3 +73,12 @@ function definirVars(vars) {
     raiz.style.setProperty(prop, vars[prop]);
   });
 }
+
+function limparPaleta() {
+  var raiz = document.documentElement;
+  varsDaPaleta.forEach(function (prop) {
+    raiz.style.removeProperty(prop);
+  });
+  raiz.style.removeProperty("color-scheme");
+  varsDaPaleta = [];
+}

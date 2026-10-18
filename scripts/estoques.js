@@ -145,3 +145,5 @@ abas.addEventListener("click", evento => {
     trocarEstoque(Number(botao.dataset.id));
   }
 });
+
+botaoExcluirEstoque.addEventListener("click", excluirEstoque);

@@ -79,3 +79,4 @@ document.getElementById("botaoExportar").addEventListener("click", () => {
 document.getElementById("botaoCancelarExportar").addEventListener("click", () => {
   modalExportarFundo.hidden = true;
 });
+document.getElementById("botaoConfirmarExportar").addEventListener("click", exportar);

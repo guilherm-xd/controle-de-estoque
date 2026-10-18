@@ -93,3 +93,31 @@ document.getElementById("botaoReposicao").addEventListener("click", () => {
       : `<table><thead><tr><th>Produto</th><th>Categoria</th><th>Em estoque</th><th>Quantidade a pedir</th></tr></thead><tbody>${linhas}</tbody></table>`}`;
   window.print();
 });
+
+function lerCsv(texto) {
+  const limpo = texto.replace(/^\ufeff/, "");
+  const separador = limpo.split("\n")[0].includes(";") ? ";" : ",";
+  const linhas = [];
+  let linha = [];
+  let campo = "";
+  let aspas = false;
+
+  for (let i = 0; i < limpo.length; i++) {
+    const c = limpo[i];
+    if (aspas) {
+      if (c === '"' && limpo[i + 1] === '"') { campo += '"'; i++; }
+      else if (c === '"') aspas = false;
+      else campo += c;
+    } else if (c === '"') aspas = true;
+    else if (c === separador) { linha.push(campo); campo = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && limpo[i + 1] === "\n") i++;
+      linha.push(campo);
+      linhas.push(linha);
+      linha = [];
+      campo = "";
+    } else campo += c;
+  }
+  if (campo !== "" || linha.length) { linha.push(campo); linhas.push(linha); }
+  return linhas;
+}

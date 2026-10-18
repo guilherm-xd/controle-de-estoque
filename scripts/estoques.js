@@ -134,3 +134,14 @@ function excluirEstoque() {
   carregarEstoqueAtivo();
   mostrarToast("Estoque excluído", false);
 }
+
+abas.addEventListener("click", evento => {
+  const botao = evento.target.closest("button");
+  if (!botao) return;
+
+  if (botao.id === "botaoNovoEstoque") {
+    novoEstoque();
+  } else if (Number(botao.dataset.id) !== estoqueAtivoId) {
+    trocarEstoque(Number(botao.dataset.id));
+  }
+});

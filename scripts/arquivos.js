@@ -46,3 +46,29 @@ function baixarArquivo(blob, nome) {
   link.click();
   URL.revokeObjectURL(link.href);
 }
+
+function exportar() {
+  estoqueAtivo().produtos = produtos;
+  const todos = exportarEscopo.value === "todos";
+  const lista = todos ? estoques : [estoqueAtivo()];
+  const nomeArquivo = todos ? "Todos os estoques" : estoqueAtivo().nome;
+
+  if (exportarFormato.value === "xlsx") {
+    const livro = XLSX.utils.book_new();
+    const usados = [];
+    lista.forEach(e => {
+      const planilha = XLSX.utils.aoa_to_sheet([CABECALHO, ...linhasDe(e.produtos, false)]);
+      XLSX.utils.book_append_sheet(livro, planilha, nomeDeAba(e.nome, usados));
+    });
+    XLSX.writeFile(livro, `${nomeArquivo}.xlsx`);
+  } else {
+    const linhas = todos
+      ? lista.flatMap(e => linhasDe(e.produtos, true).map(l => [e.nome, ...l]))
+      : linhasDe(lista[0].produtos, true);
+    const cabecalho = todos ? ["Estoque", ...CABECALHO] : CABECALHO;
+    const csv = [cabecalho, ...linhas].map(l => l.map(escaparCsv).join(";")).join("\r\n");
+    baixarArquivo(new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" }), `${nomeArquivo}.csv`);
+  }
+  modalExportarFundo.hidden = true;
+  mostrarToast("Arquivo exportado", false);
+}

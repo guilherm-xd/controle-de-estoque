@@ -172,3 +172,10 @@ redimensionador.addEventListener("pointerup", evento => {
   redimensionador.classList.remove("arrastando");
   document.body.style.userSelect = "";
 });
+
+redimensionador.addEventListener("keydown", evento => {
+  const atual = document.querySelector(".barraLateral").offsetWidth;
+  const sentido = app.dataset.posicao === "direita" ? -1 : 1;
+  if (evento.key === "ArrowRight") definirLargura(atual + 20 * sentido);
+  if (evento.key === "ArrowLeft") definirLargura(atual - 20 * sentido);
+});

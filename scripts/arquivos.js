@@ -38,3 +38,11 @@ function nomeDeAba(nome, usados) {
   usados.push(final);
   return final;
 }
+
+function baixarArquivo(blob, nome) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = nome;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}

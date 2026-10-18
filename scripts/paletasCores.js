@@ -58,3 +58,10 @@ function lerHexPersonalizado() {
   } catch (erro) {}
   return "#8833ff";
 }
+
+function guardar(chave, valor) {
+  try {
+    if (valor === null) localStorage.removeItem(chave);
+    else localStorage.setItem(chave, valor);
+  } catch (erro) {}
+}

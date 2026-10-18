@@ -14,3 +14,4 @@ function escaparCsv(valor) {
   const texto = String(valor);
   return /[";\n]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
 }
+const CABECALHO = ["Produto", "Categoria", "Quantidade", "Preço (R$)", "Status"];

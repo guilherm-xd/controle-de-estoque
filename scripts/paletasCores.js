@@ -50,3 +50,11 @@ function ajustarPersonalizada(hex) {
     misturar("#000000", hex, 0.18),
   ];
 }
+
+function lerHexPersonalizado() {
+  try {
+    var hex = localStorage.getItem("paleta-hex");
+    if (/^#[0-9a-f]{6}$/i.test(hex || "")) return hex;
+  } catch (erro) {}
+  return "#8833ff";
+}

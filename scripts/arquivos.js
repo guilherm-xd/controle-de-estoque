@@ -15,3 +15,7 @@ function escaparCsv(valor) {
   return /[";\n]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
 }
 const CABECALHO = ["Produto", "Categoria", "Quantidade", "Preço (R$)", "Status"];
+
+function statusDoProduto(p) {
+  return p.quantidade === 0 ? "Sem estoque" : estoqueBaixo(p) ? "Estoque baixo" : "Em estoque";
+}

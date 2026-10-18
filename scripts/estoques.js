@@ -40,3 +40,27 @@ tituloPagina.addEventListener("keydown", evento => {
     tituloPagina.blur();
   }
 });
+
+function renderizarAbas() {
+  abas.innerHTML = "";
+
+  estoques.forEach(estoque => {
+    const aba = document.createElement("button");
+    aba.type = "button";
+    aba.className = "aba" + (estoque.id === estoqueAtivoId ? " ativa" : "");
+    aba.textContent = estoque.nome;
+    aba.dataset.id = estoque.id;
+    abas.appendChild(aba);
+  });
+
+  const nova = document.createElement("button");
+  nova.type = "button";
+  nova.className = "aba abaNova";
+  nova.id = "botaoNovoEstoque";
+  nova.textContent = "+";
+  nova.title = "Novo estoque";
+  nova.setAttribute("aria-label", "Novo estoque");
+  abas.appendChild(nova);
+
+  botaoExcluirEstoque.hidden = estoques.length === 1;
+}

@@ -20,3 +20,14 @@ function salvarTitulo() {
   renderizarAbas();
   salvarDados();
 }
+
+botaoEditarTitulo.addEventListener("click", () => {
+  tituloPagina.contentEditable = "true";
+  tituloPagina.focus();
+
+  const faixa = document.createRange();
+  faixa.selectNodeContents(tituloPagina);
+  const selecao = window.getSelection();
+  selecao.removeAllRanges();
+  selecao.addRange(faixa);
+});

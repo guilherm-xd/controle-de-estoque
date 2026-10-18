@@ -147,3 +147,5 @@ abas.addEventListener("click", evento => {
 });
 
 botaoExcluirEstoque.addEventListener("click", excluirEstoque);
+
+const LARGURA_MIN = 260;

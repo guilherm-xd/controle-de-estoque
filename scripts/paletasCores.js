@@ -37,3 +37,16 @@ function luminancia(hex) {
 function textoSobre(hex) {
   return luminancia(hex) > 0.4 ? "#14181c" : "#ffffff";
 }
+
+function ajustarPersonalizada(hex) {
+  var c = PALETAS_CORES.personalizada;
+  c.acento = hex;
+  c.acentoTexto = misturar(hex, "#ffffff", 0.8);
+  c.cursor = misturar(hex, "#ffffff", 0.45);
+  PALETAS_FUNDOS.escuro.personalizada = [
+    misturar("#000000", hex, 0.08),
+    misturar("#000000", hex, 0.13),
+    misturar("#000000", hex, 0.3),
+    misturar("#000000", hex, 0.18),
+  ];
+}

@@ -71,3 +71,25 @@ function desarmarExclusao() {
   botaoExcluirEstoque.classList.remove("armado");
   botaoExcluirEstoque.dataset.dica = "Excluir este estoque (clique duas vezes)";
 }
+
+function carregarEstoqueAtivo() {
+  const estoque = estoqueAtivo();
+  produtos = estoque.produtos;
+  proximoId = estoque.proximoId;
+
+  idParaRemover = null;
+  termoBusca = "";
+  categoriaFiltro = "";
+  filtroAtual = { min: null, max: null };
+  buscaProduto.value = "";
+  filtroQtdMin.value = "";
+  filtroQtdMax.value = "";
+  tituloPagina.textContent = estoque.nome;
+
+  reiniciarDesconto();
+  atualizarBotaoEstoqueBaixo();
+  desarmarExclusao();
+  renderizarAbas();
+  atualizarTela();
+  animarEntrada();
+}

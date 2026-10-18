@@ -149,3 +149,8 @@ abas.addEventListener("click", evento => {
 botaoExcluirEstoque.addEventListener("click", excluirEstoque);
 
 const LARGURA_MIN = 260;
+
+function definirLargura(px) {
+  const maxima = Math.min(600, window.innerWidth * 0.5);
+  app.style.setProperty("--larguraBarraLateral", Math.max(LARGURA_MIN, Math.min(px, maxima)) + "px");
+}

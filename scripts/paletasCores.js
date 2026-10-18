@@ -82,3 +82,69 @@ function limparPaleta() {
   raiz.style.removeProperty("color-scheme");
   varsDaPaleta = [];
 }
+
+function calcularPaleta(modo, cor) {
+  var c = PALETAS_CORES[cor];
+  var escuro = modo === "escuro";
+  var acento = c.acento;
+  var m = MODOS_PALETA[modo];
+  var fundo, superficie, borda, campo, hover;
+
+  if (escuro) {
+    var f = PALETAS_FUNDOS.escuro[cor];
+    fundo = f[0];
+    superficie = f[1];
+    borda = f[2];
+    campo = f[0];
+    hover = f[3];
+  } else {
+    fundo = misturar(acento, "#f6f6f4", 0.93);
+    superficie = "#ffffff";
+    borda = misturar(acento, "#d9dbd8", 0.86);
+    campo = misturar(acento, "#ffffff", 0.98);
+    hover = misturar(acento, "#ffffff", 0.95);
+  }
+
+  var lateral = misturar(dessaturar(acento, 0.3), "#000000", escuro ? 0.66 : 0.58);
+  var perigo = escuro ? "#c93a32" : "#b3261e";
+  var ok = "#39b36f";
+
+  return {
+    "--corFundo": fundo,
+    "--corSuperficie": superficie,
+    "--corBorda": borda,
+    "--corCampo": campo,
+    "--corLinhaHover": hover,
+    "--corTexto": m.texto,
+    "--corTextoSuave": m.suave,
+    "--corPrimaria": acento,
+    "--corSobrePrimaria": textoSobre(acento),
+    "--corPrimariaEscura": lateral,
+    "--corPrimariaHover": misturar(acento, escuro ? "#ffffff" : "#000000", 0.15),
+    "--corPrimariaSuave": misturar(acento, superficie, escuro ? 0.78 : 0.86),
+    "--corPrimariaTexto": escuro ? c.acentoTexto : misturar(acento, "#000000", 0.55),
+    "--corOkFundo": misturar(ok, superficie, escuro ? 0.8 : 0.85),
+    "--corOkTexto": escuro ? "#7ee2a4" : "#1e6b3c",
+    "--corAlerta": escuro ? c.presente : misturar(c.presente, "#000000", 0.5),
+    "--corAlertaFundo": misturar(c.presente, superficie, 0.84),
+    "--corAlertaBorda": misturar(c.presente, superficie, 0.5),
+    "--corPerigo": perigo,
+    "--corPerigoTexto": escuro ? "#ff8f88" : "#b3261e",
+    "--corPerigoFundo": misturar(perigo, superficie, 0.86),
+    "--corPerigoBorda": misturar(perigo, superficie, 0.55),
+    "--topoBarraLateral": misturar(lateral, "#ffffff", 0.1),
+    "--barraTexto": "#f2f5f4",
+    "--barraTitulo": "#f2f5f4",
+    "--barraLegenda": "#f2f5f4",
+    "--barraApagado": misturar(lateral, "#ffffff", 0.78),
+    "--barraLinha": misturar(lateral, "#ffffff", 0.16),
+    "--barraCampo": misturar(lateral, "#000000", 0.28),
+    "--barraBordaBotao": misturar(lateral, "#ffffff", 0.3),
+    "--barraMarcador": misturar(lateral, "#ffffff", 0.65),
+    "--barraFoco": c.cursor,
+    "--sombraCartao": escuro
+      ? "0 0 0 1px rgba(0, 0, 0, 0.25)"
+      : "0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 1px rgba(0, 0, 0, 0.04)",
+    "color-scheme": escuro ? "dark" : "light",
+  };
+}

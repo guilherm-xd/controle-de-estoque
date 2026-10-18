@@ -166,3 +166,9 @@ redimensionador.addEventListener("pointermove", evento => {
   const naDireita = app.dataset.posicao === "direita";
   definirLargura(naDireita ? window.innerWidth - evento.clientX : evento.clientX);
 });
+
+redimensionador.addEventListener("pointerup", evento => {
+  redimensionador.releasePointerCapture(evento.pointerId);
+  redimensionador.classList.remove("arrastando");
+  document.body.style.userSelect = "";
+});

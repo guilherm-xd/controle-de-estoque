@@ -33,3 +33,10 @@ botaoEditarTitulo.addEventListener("click", () => {
 });
 
 tituloPagina.addEventListener("blur", salvarTitulo);
+
+tituloPagina.addEventListener("keydown", evento => {
+  if (evento.key === "Enter") {
+    evento.preventDefault();
+    tituloPagina.blur();
+  }
+});

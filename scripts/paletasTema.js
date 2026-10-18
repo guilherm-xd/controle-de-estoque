@@ -87,3 +87,8 @@ function favoritoAtual() {
     ? { tema: estadoTema.tema, modo: paleta.modo, cor: paleta.cor, hex: paleta.hex }
     : null;
 }
+
+function nomeFavorito(f) {
+  var nome = MODOS_PALETA[f.modo].nome + " · " + PALETAS_CORES[f.cor].nome + (f.hex ? " " + f.hex : "");
+  return f.tema === "classico" ? nome : nome + " · " + TEMAS[f.tema].nome;
+}

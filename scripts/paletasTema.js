@@ -76,3 +76,7 @@ function lerFavoritos() {
 function salvarFavoritos(lista) {
   guardar("temas-favoritos", JSON.stringify(lista));
 }
+
+function mesmoFavorito(a, b) {
+  return a.tema === b.tema && a.modo === b.modo && a.cor === b.cor && a.hex === b.hex;
+}

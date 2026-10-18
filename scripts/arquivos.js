@@ -185,3 +185,5 @@ async function importarArquivo(arquivo) {
   carregarEstoqueAtivo();
   mostrarToast(nomes.length === 1 ? "Estoque importado" : `${nomes.length} estoques importados`);
 }
+
+document.getElementById("botaoImportar").addEventListener("click", () => arquivoImportar.click());

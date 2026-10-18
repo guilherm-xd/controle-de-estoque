@@ -19,3 +19,13 @@ const CABECALHO = ["Produto", "Categoria", "Quantidade", "Preço (R$)", "Status"
 function statusDoProduto(p) {
   return p.quantidade === 0 ? "Sem estoque" : estoqueBaixo(p) ? "Estoque baixo" : "Em estoque";
 }
+
+function linhasDe(lista, comoTexto) {
+  return lista.map(p => [
+    p.nome,
+    p.categoria,
+    p.quantidade,
+    comoTexto ? p.preco.toFixed(2).replace(".", ",") : p.preco,
+    statusDoProduto(p)
+  ]);
+}

@@ -145,3 +145,43 @@ function agruparProdutos(linhas, nomePadrao) {
 
   return grupos;
 }
+
+async function importarArquivo(arquivo) {
+  const nomeBase = arquivo.name.replace(/\.[^.]+$/, "");
+  const grupos = {};
+
+  if (/\.xlsx?$/i.test(arquivo.name)) {
+    const livro = XLSX.read(await arquivo.arrayBuffer());
+    livro.SheetNames.forEach(nome => {
+      const linhas = XLSX.utils.sheet_to_json(livro.Sheets[nome], { header: 1 });
+      if (linhas.length) Object.assign(grupos, agruparProdutos(linhas, nome));
+    });
+  } else {
+    const linhas = lerCsv(await arquivo.text());
+    if (linhas.length) Object.assign(grupos, agruparProdutos(linhas, nomeBase));
+  }
+
+  const nomes = Object.keys(grupos);
+  if (nomes.length === 0) {
+    alert("Não encontrei as colunas Produto e Quantidade no arquivo.");
+    return;
+  }
+
+  estoqueAtivo().produtos = produtos;
+  estoqueAtivo().proximoId = proximoId;
+
+  let ultimoId;
+  nomes.forEach(nome => {
+    ultimoId = proximoIdEstoque++;
+    estoques.push({
+      id: ultimoId,
+      nome,
+      produtos: grupos[nome].map((p, indice) => ({ ...p, id: indice + 1 })),
+      proximoId: grupos[nome].length + 1
+    });
+  });
+
+  estoqueAtivoId = ultimoId;
+  carregarEstoqueAtivo();
+  mostrarToast(nomes.length === 1 ? "Estoque importado" : `${nomes.length} estoques importados`);
+}

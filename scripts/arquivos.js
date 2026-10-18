@@ -29,3 +29,12 @@ function linhasDe(lista, comoTexto) {
     statusDoProduto(p)
   ]);
 }
+
+function nomeDeAba(nome, usados) {
+  const base = nome.replace(/[\[\]:*?\/\\]/g, " ").trim().slice(0, 28) || "Estoque";
+  let final = base;
+  let i = 2;
+  while (usados.includes(final)) final = `${base} ${i++}`;
+  usados.push(final);
+  return final;
+}

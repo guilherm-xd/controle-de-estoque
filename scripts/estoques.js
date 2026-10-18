@@ -31,3 +31,5 @@ botaoEditarTitulo.addEventListener("click", () => {
   selecao.removeAllRanges();
   selecao.addRange(faixa);
 });
+
+tituloPagina.addEventListener("blur", salvarTitulo);

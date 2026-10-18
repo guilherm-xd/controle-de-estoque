@@ -102,3 +102,9 @@ function trocarEstoque(id) {
   estoqueAtivoId = id;
   carregarEstoqueAtivo();
 }
+
+function proximoNomeLivre() {
+  let numero = 2;
+  while (estoques.some(e => e.nome === `Estoque ${numero}`)) numero++;
+  return `Estoque ${numero}`;
+}

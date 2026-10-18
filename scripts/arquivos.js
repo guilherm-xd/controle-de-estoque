@@ -121,3 +121,27 @@ function lerCsv(texto) {
   if (campo !== "" || linha.length) { linha.push(campo); linhas.push(linha); }
   return linhas;
 }
+
+function agruparProdutos(linhas, nomePadrao) {
+  const cabecalho = linhas[0].map(c => String(c).trim().toLowerCase());
+  const col = texto => cabecalho.findIndex(c => c.startsWith(texto));
+  const i = { estoque: col("estoque"), nome: col("produto"), categoria: col("categoria"), quantidade: col("quantidade"), preco: col("preço") };
+  const grupos = {};
+
+  if (i.nome < 0 || i.quantidade < 0) return grupos;
+
+  linhas.slice(1)
+    .filter(l => String(l[i.nome] ?? "").trim() !== "")
+    .forEach(l => {
+      const nomeEstoque = i.estoque >= 0 ? String(l[i.estoque]).trim() || nomePadrao : nomePadrao;
+      if (!grupos[nomeEstoque]) grupos[nomeEstoque] = [];
+      grupos[nomeEstoque].push({
+        nome: String(l[i.nome]).trim(),
+        categoria: i.categoria >= 0 ? String(l[i.categoria] ?? "").trim() : "",
+        quantidade: Math.max(0, parseInt(l[i.quantidade]) || 0),
+        preco: parseFloat(String(l[i.preco] ?? 0).replace(",", ".")) || 0
+      });
+    });
+
+  return grupos;
+}

@@ -64,3 +64,10 @@ function renderizarAbas() {
 
   botaoExcluirEstoque.hidden = estoques.length === 1;
 }
+
+function desarmarExclusao() {
+  clearTimeout(timerExcluir);
+  excluindoEstoque = false;
+  botaoExcluirEstoque.classList.remove("armado");
+  botaoExcluirEstoque.dataset.dica = "Excluir este estoque (clique duas vezes)";
+}

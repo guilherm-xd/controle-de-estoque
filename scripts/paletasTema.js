@@ -29,3 +29,13 @@ function ligarElementos() {
 }
 
 document.addEventListener("DOMContentLoaded", ligarElementos);
+function aplicarTema(tema) {
+  if (!TEMAS[tema]) tema = "classico";
+  limparPaleta();
+  document.getElementById("linkTema").href = "styles/tema-" + tema + ".css";
+  estadoTema = { tema: tema, paleta: null };
+  guardar("tema-escolhido", tema);
+  guardar("paleta-modo", null);
+  guardar("paleta-cor", null);
+  atualizarMenuTema();
+}

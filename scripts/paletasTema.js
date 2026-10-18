@@ -55,3 +55,20 @@ function aplicarPaleta(modo, cor, hex) {
   guardar("paleta-hex", personalizada ? hex : null);
   atualizarMenuTema();
 }
+
+function lerFavoritos() {
+  try {
+    var lista = JSON.parse(localStorage.getItem("temas-favoritos"));
+    if (!Array.isArray(lista)) return [];
+    return lista.filter(function (f) {
+      return (
+        TEMAS[f.tema] &&
+        MODOS_PALETA[f.modo] &&
+        PALETAS_CORES[f.cor] &&
+        (f.cor !== "personalizada" || /^#[0-9a-f]{6}$/i.test(f.hex || ""))
+      );
+    });
+  } catch (erro) {
+    return [];
+  }
+}

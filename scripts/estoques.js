@@ -154,3 +154,9 @@ function definirLargura(px) {
   const maxima = Math.min(600, window.innerWidth * 0.5);
   app.style.setProperty("--larguraBarraLateral", Math.max(LARGURA_MIN, Math.min(px, maxima)) + "px");
 }
+
+redimensionador.addEventListener("pointerdown", evento => {
+  redimensionador.setPointerCapture(evento.pointerId);
+  redimensionador.classList.add("arrastando");
+  document.body.style.userSelect = "none";
+});

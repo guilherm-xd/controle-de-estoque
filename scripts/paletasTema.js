@@ -39,3 +39,19 @@ function aplicarTema(tema) {
   guardar("paleta-cor", null);
   atualizarMenuTema();
 }
+
+function aplicarPaleta(modo, cor, hex) {
+  if (!MODOS_PALETA[modo] || !PALETAS_CORES[cor]) return;
+  var personalizada = cor === "personalizada";
+  if (personalizada) {
+    hex = hex || lerHexPersonalizado();
+    ajustarPersonalizada(hex);
+  }
+  limparPaleta();
+  definirVars(calcularPaleta(modo, cor));
+  estadoTema.paleta = { modo: modo, cor: cor, hex: personalizada ? hex : undefined };
+  guardar("paleta-modo", modo);
+  guardar("paleta-cor", cor);
+  guardar("paleta-hex", personalizada ? hex : null);
+  atualizarMenuTema();
+}

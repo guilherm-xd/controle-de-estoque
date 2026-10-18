@@ -72,3 +72,7 @@ function exportar() {
   modalExportarFundo.hidden = true;
   mostrarToast("Arquivo exportado", false);
 }
+
+document.getElementById("botaoExportar").addEventListener("click", () => {
+  modalExportarFundo.hidden = false;
+});

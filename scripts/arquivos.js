@@ -187,3 +187,8 @@ async function importarArquivo(arquivo) {
 }
 
 document.getElementById("botaoImportar").addEventListener("click", () => arquivoImportar.click());
+
+arquivoImportar.addEventListener("change", () => {
+  if (arquivoImportar.files[0]) importarArquivo(arquivoImportar.files[0]);
+  arquivoImportar.value = "";
+});

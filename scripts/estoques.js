@@ -179,3 +179,6 @@ redimensionador.addEventListener("keydown", evento => {
   if (evento.key === "ArrowRight") definirLargura(atual + 20 * sentido);
   if (evento.key === "ArrowLeft") definirLargura(atual - 20 * sentido);
 });
+
+carregarDados();
+carregarEstoqueAtivo();

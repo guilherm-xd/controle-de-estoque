@@ -342,3 +342,6 @@ function carregarTema() {
     estadoTema.paleta = { modo: modo, cor: cor, hex: hex };
   }
 }
+
+carregarTema();
+document.addEventListener("DOMContentLoaded", montarMenuTema);

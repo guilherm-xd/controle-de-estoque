@@ -317,3 +317,28 @@ function montarMenuTema() {
 
   atualizarMenuTema();
 }
+
+function carregarTema() {
+  var tema = localStorage.getItem("tema-escolhido");
+  var modo = localStorage.getItem("paleta-modo");
+  var cor = localStorage.getItem("paleta-cor");
+
+  if (!tema && !modo && !cor) {
+    modo = "escuro";
+    cor = "abismo";
+  }
+
+  if (TEMAS[tema]) {
+    document.getElementById("linkTema").href = "styles/tema-" + tema + ".css";
+    estadoTema.tema = tema;
+  }
+  if (MODOS_PALETA[modo] && PALETAS_CORES[cor]) {
+    var hex;
+    if (cor === "personalizada") {
+      hex = lerHexPersonalizado();
+      ajustarPersonalizada(hex);
+    }
+    definirVars(calcularPaleta(modo, cor));
+    estadoTema.paleta = { modo: modo, cor: cor, hex: hex };
+  }
+}

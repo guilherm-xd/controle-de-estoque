@@ -92,3 +92,20 @@ function nomeFavorito(f) {
   var nome = MODOS_PALETA[f.modo].nome + " · " + PALETAS_CORES[f.cor].nome + (f.hex ? " " + f.hex : "");
   return f.tema === "classico" ? nome : nome + " · " + TEMAS[f.tema].nome;
 }
+
+function alternarFavorito() {
+  var atual = favoritoAtual();
+  if (!atual) return;
+  var lista = lerFavoritos();
+  var existe = lista.some(function (f) {
+    return mesmoFavorito(f, atual);
+  });
+  salvarFavoritos(
+    existe
+      ? lista.filter(function (f) {
+          return !mesmoFavorito(f, atual);
+        })
+      : lista.concat(atual),
+  );
+  atualizarMenuTema();
+}

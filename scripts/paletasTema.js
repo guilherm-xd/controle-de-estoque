@@ -114,3 +114,40 @@ function aplicarFavorito(f) {
   aplicarTema(f.tema);
   aplicarPaleta(f.modo, f.cor, f.hex);
 }
+
+function criarLinhaTema(
+  rotulo,
+  corAmostra,
+  atributo,
+  valor,
+  pressionado,
+  indiceRemover,
+) {
+  var linha = document.createElement("div");
+  var botao = document.createElement("button");
+  var amostra = document.createElement("span");
+  var texto = document.createElement("span");
+
+  linha.className = "linhaTema";
+  botao.type = "button";
+  botao.className = "itemTema";
+  botao.dataset[atributo] = valor;
+  botao.setAttribute("aria-pressed", pressionado);
+  amostra.className = "amostraTema";
+  amostra.style.background = corAmostra;
+  texto.textContent = rotulo;
+  botao.append(amostra, texto);
+  linha.appendChild(botao);
+
+  if (indiceRemover !== undefined) {
+    var remover = document.createElement("button");
+    remover.type = "button";
+    remover.className = "removerFavorito";
+    remover.dataset.remover = indiceRemover;
+    remover.textContent = "×";
+    remover.title = "Remover dos favoritos";
+    remover.setAttribute("aria-label", "Remover dos favoritos");
+    linha.appendChild(remover);
+  }
+  return linha;
+}

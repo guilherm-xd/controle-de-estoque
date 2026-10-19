@@ -151,3 +151,74 @@ function criarLinhaTema(
   }
   return linha;
 }
+
+function atualizarMenuTema() {
+  var nome = document.getElementById("nomeTema");
+  if (!nome) return;
+  var paleta = estadoTema.paleta;
+  var atual = favoritoAtual();
+  var favoritos = lerFavoritos();
+  var lista = document.getElementById("listaTemas");
+  var cor = paleta
+    ? PALETAS_CORES[paleta.cor].acento
+    : TEMAS[estadoTema.tema].cor;
+
+  nome.textContent = atual ? nomeFavorito(atual) : TEMAS[estadoTema.tema].nome;
+  document.getElementById("amostraTema").style.background = cor;
+
+  lista.innerHTML = "";
+  Object.keys(TEMAS).forEach(function (chave) {
+    lista.appendChild(
+      criarLinhaTema(
+        TEMAS[chave].nome,
+        TEMAS[chave].cor,
+        "tema",
+        chave,
+        !paleta && chave === estadoTema.tema,
+      ),
+    );
+  });
+  favoritos.forEach(function (f, i) {
+    lista.appendChild(
+      criarLinhaTema(
+        nomeFavorito(f),
+        (f.hex || PALETAS_CORES[f.cor].acento),
+        "favorito",
+        i,
+        !!atual && mesmoFavorito(f, atual),
+        i,
+      ),
+    );
+  });
+
+  document.querySelectorAll("[data-modo]").forEach(function (botao) {
+    botao.setAttribute(
+      "aria-pressed",
+      !!paleta && botao.dataset.modo === paleta.modo,
+    );
+  });
+  document.querySelectorAll("[data-cor]").forEach(function (botao) {
+    botao.setAttribute(
+      "aria-pressed",
+      !!paleta && botao.dataset.cor === paleta.cor,
+    );
+  });
+
+  var botaoPers = document.getElementById("botaoPersonalizada");
+  var ehPers = !!paleta && paleta.cor === "personalizada";
+  botaoPers.setAttribute("aria-pressed", ehPers);
+  document.getElementById("amostraPersonalizada").style.background = ehPers
+    ? PALETAS_CORES.personalizada.acento
+    : "conic-gradient(#e53935, #f0c94a, #32b85f, #18b9d2, #3344ff, #8833ff, #e53935)";
+
+  var botaoFavoritar = document.getElementById("botaoFavoritar");
+  var jaFavorito =
+    !!atual &&
+    favoritos.some(function (f) {
+      return mesmoFavorito(f, atual);
+    });
+  botaoFavoritar.hidden = !paleta;
+  botaoFavoritar.textContent = jaFavorito
+    ? "★ Remover dos favoritos"
+    : "☆ Favoritar este tema";
+}

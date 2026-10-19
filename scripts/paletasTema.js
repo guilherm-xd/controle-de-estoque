@@ -109,3 +109,8 @@ function alternarFavorito() {
   );
   atualizarMenuTema();
 }
+
+function aplicarFavorito(f) {
+  aplicarTema(f.tema);
+  aplicarPaleta(f.modo, f.cor, f.hex);
+}

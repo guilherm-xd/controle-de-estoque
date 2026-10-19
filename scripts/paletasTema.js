@@ -222,3 +222,98 @@ function atualizarMenuTema() {
     ? "★ Remover dos favoritos"
     : "☆ Favoritar este tema";
 }
+
+function montarMenuTema() {
+  var botaoMenu = document.getElementById("botaoTema");
+  var menu = document.getElementById("menuTema");
+  var listaTemas = document.getElementById("listaTemas");
+  var grupoModo = document.getElementById("grupoModo");
+  var grupoCores = document.getElementById("grupoCores");
+  var modoAtual = "escuro";
+
+  ORDEM_CORES_PALETA.forEach(function (cor) {
+    var botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "opcaoCor";
+    botao.dataset.cor = cor;
+    botao.title = PALETAS_CORES[cor].nome;
+    botao.setAttribute("aria-label", PALETAS_CORES[cor].nome);
+    botao.style.background = PALETAS_CORES[cor].acento;
+    grupoCores.appendChild(botao);
+  });
+
+  function fechar() {
+    menu.hidden = true;
+    botaoMenu.setAttribute("aria-expanded", "false");
+  }
+
+  botaoMenu.addEventListener("click", function () {
+    var abrir = menu.hidden;
+    menu.hidden = !abrir;
+    botaoMenu.setAttribute("aria-expanded", String(abrir));
+  });
+
+  listaTemas.addEventListener("click", function (evento) {
+    var remover = evento.target.closest("[data-remover]");
+    if (remover) {
+      var favoritos = lerFavoritos();
+      favoritos.splice(Number(remover.dataset.remover), 1);
+      salvarFavoritos(favoritos);
+      atualizarMenuTema();
+      return;
+    }
+    var favorito = evento.target.closest("[data-favorito]");
+    if (favorito) {
+      aplicarFavorito(lerFavoritos()[Number(favorito.dataset.favorito)]);
+      fechar();
+      return;
+    }
+    var botao = evento.target.closest("[data-tema]");
+    if (!botao) return;
+    aplicarTema(botao.dataset.tema);
+    fechar();
+  });
+
+  var campoCor = document.getElementById("campoCorPersonalizada");
+  document
+    .getElementById("botaoPersonalizada")
+    .addEventListener("click", function () {
+      var p = estadoTema.paleta;
+      campoCor.value = p ? PALETAS_CORES[p.cor].acento : lerHexPersonalizado();
+      if (campoCor.showPicker) campoCor.showPicker();
+      else campoCor.click();
+    });
+  campoCor.addEventListener("input", function () {
+    var modo = estadoTema.paleta ? estadoTema.paleta.modo : modoAtual;
+    aplicarPaleta(modo, "personalizada", campoCor.value);
+  });
+
+  document
+    .getElementById("botaoFavoritar")
+    .addEventListener("click", alternarFavorito);
+
+  grupoModo.addEventListener("click", function (evento) {
+    var botao = evento.target.closest("[data-modo]");
+    if (!botao) return;
+    modoAtual = botao.dataset.modo;
+    var cor = estadoTema.paleta ? estadoTema.paleta.cor : "verde";
+    aplicarPaleta(modoAtual, cor);
+  });
+
+  grupoCores.addEventListener("click", function (evento) {
+    var botao = evento.target.closest("[data-cor]");
+    if (!botao) return;
+    var modo = estadoTema.paleta ? estadoTema.paleta.modo : modoAtual;
+    aplicarPaleta(modo, botao.dataset.cor);
+  });
+
+  document.addEventListener("click", function (evento) {
+    if (!evento.target.closest("#seletorTema")) fechar();
+  });
+
+  document.addEventListener("keydown", function (evento) {
+    if (evento.key === "Escape") fechar();
+  });
+
+  atualizarMenuTema();
+}

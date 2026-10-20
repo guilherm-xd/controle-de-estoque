@@ -34,3 +34,9 @@ cartaoEstoqueBaixo.addEventListener('keydown', evento => {
     alternarEstoqueBaixo();
   }
 });
+
+botaoLimparFiltro.addEventListener('click', () => {
+  filtroQtdMin.value = '';
+  filtroQtdMax.value = '';
+  aplicarFiltro();
+});

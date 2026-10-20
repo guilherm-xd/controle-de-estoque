@@ -20,7 +20,17 @@ function alternarEstoqueBaixo() {
     filtroQtdMax.value = '';
   } else {
     filtroQtdMin.value = '';
-    filtroQtdMax.value = ESTOQUE_BAIXO - 1;
+    filtroQtdMax.value = estoqueBaixo - 1;
   }
   aplicarFiltro();
 }
+
+botaoFiltrar.addEventListener('click', aplicarFiltro);
+botaoEstoqueBaixo.addEventListener('click', alternarEstoqueBaixo);
+cartaoEstoqueBaixo.addEventListener('click', alternarEstoqueBaixo);
+cartaoEstoqueBaixo.addEventListener('keydown', evento => {
+  if (evento.key === 'Enter' || evento.key === ' ') {
+    evento.preventDefault();
+    alternarEstoqueBaixo();
+  }
+});

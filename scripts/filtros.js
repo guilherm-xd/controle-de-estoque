@@ -14,3 +14,13 @@ function aplicarFiltro() {
   renderizarLista();
 }
 
+function alternarEstoqueBaixo() {
+  if (filtroEhEstoqueBaixo()) {
+    filtroQtdMin.value = '';
+    filtroQtdMax.value = '';
+  } else {
+    filtroQtdMin.value = '';
+    filtroQtdMax.value = ESTOQUE_BAIXO - 1;
+  }
+  aplicarFiltro();
+}

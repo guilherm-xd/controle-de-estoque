@@ -1,4 +1,3 @@
-
 const botaoFiltrar = document.getElementById("botaoFiltrar");
 const botaoLimparFiltro = document.getElementById("botaoLimparFiltro");
 
@@ -9,3 +8,9 @@ const painelLista = document.querySelector(".painelLista");
 const botoesVisao = document.querySelectorAll(".botaoVisao");
 
 const alternadorGrafico = document.getElementById("alternadorGrafico");
+
+function aplicarFiltro() {
+  filtroAtual = { min: lerNumero(filtroQtdMin), max: lerNumero(filtroQtdMax) };
+  renderizarLista();
+}
+

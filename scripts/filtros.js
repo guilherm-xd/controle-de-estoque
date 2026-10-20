@@ -40,3 +40,8 @@ botaoLimparFiltro.addEventListener('click', () => {
   filtroQtdMax.value = '';
   aplicarFiltro();
 });
+
+buscaProduto.addEventListener('input', () => {
+  termoBusca = buscaProduto.value;
+  renderizarLista();
+});

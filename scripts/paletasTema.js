@@ -202,15 +202,15 @@ function atualizarMenuTema() {
     );
   });
 
-  var botaoPers = document.getElementById("botaoPersonalizada");
-  var ehPers = !!paleta && paleta.cor === "personalizada";
+  let botaoPers = document.getElementById("botaoPersonalizada");
+  let ehPers = !!paleta && paleta.cor === "personalizada";
   botaoPers.setAttribute("aria-pressed", ehPers);
   document.getElementById("amostraPersonalizada").style.background = ehPers
-    ? PALETAS_CORES.personalizada.acento
+    ? coresPaleta.personalizada.acento
     : "conic-gradient(#e53935, #f0c94a, #32b85f, #18b9d2, #3344ff, #8833ff, #e53935)";
 
-  var botaoFavoritar = document.getElementById("botaoFavoritar");
-  var jaFavorito =
+  let botaoFavoritar = document.getElementById("botaoFavoritar");
+  let jaFavorito =
     !!atual &&
     favoritos.some(function (f) {
       return mesmoFavorito(f, atual);

@@ -66,6 +66,157 @@ formularioProduto.addEventListener("submit", (fazer) => {
   mostrarToast('"' + campoNomes + '" ' + "adicionado ao estoque");
 });
 
+function esconderAviso() {
+  clearTimeout(timerAviso);
+  aviso.hidden = true;
+}
+
+function mostrarAvisoDesfazer() {
+  aviso.querySelector("span").textContent =
+    '"' + ultimoRemovido.produto.nome + '" removido';
+  aviso.hidden = false;
+  clearTimeout(timerAviso);
+  timerAviso = setTimeout(esconderAviso, 6000);
+}
+
+function removerProduto(id) {
+  clearTimeout(timerRemover);
+
+  if (idParaRemover !== id) {
+    idParaRemover = id;
+    timerRemover = setTimeout(() => {
+      idParaRemover = null;
+      renderizarLista();
+    }, 3000);
+    renderizarLista();
+    return;
+  }
+
+  idParaRemover = null;
+  const indice = produtos.findIndex((produto) => produto.id === id);
+  ultimoRemovido = {
+    produto: produtos[indice],
+    indice: indice,
+    estoqueId: estoqueAtivoId,
+  };
+  produtos = produtos.filter((produto) => produto.id !== id);
+  registrarHistorico('"' + ultimoRemovido.produto.nome + '" removido');
+  atualizarTela();
+  mostrarAvisoDesfazer();
+}
+
+aviso.querySelector("button").addEventListener("click", () => {
+  if (ultimoRemovido === null) {
+    return;
+  }
+  const produto = ultimoRemovido.produto;
+  const indice = ultimoRemovido.indice;
+  const estoqueId = ultimoRemovido.estoqueId;
+  ultimoRemovido = null;
+  esconderAviso();
+
+  if (!estoques.some((e) => e.id === estoqueId)) {
+    return;
+  }
+  if (estoqueId !== estoqueAtivoId) {
+    trocarEstoque(estoqueId);
+  }
+  produtos.splice(indice, 0, produto);
+  registrarHistorico('"' + produto.nome + '" restaurado');
+  atualizarTela();
+});
+
+function abrirEdicao(id) {
+  const produtoEditado = produtos.find((produto) => produto.id === id);
+
+  editarId.value = produtoEditado.id;
+  editarNome.value = produtoEditado.nome;
+  editarCategoria.value = produtoEditado.categoria;
+  editarQuantidade.value = produtoEditado.quantidade;
+  editarPreco.value = produtoEditado.preco;
+
+  modalEditarFundo.hidden = false;
+  editarNome.focus();
+}
+
+function fecharEdicao() {
+  modalEditarFundo.hidden = true;
+}
+
+formularioEditarProduto.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  const id = Number(editarId.value);
+
+  produtos = produtos.map((produto) => {
+    if (produto.id !== id) {
+      return produto;
+    }
+    const novoPreco = Number(editarPreco.value);
+    const atualizado = {
+      ...produto,
+      nome: editarNome.value.trim(),
+      categoria: editarCategoria.value.trim(),
+      quantidade: Number(editarQuantidade.value),
+      preco: novoPreco,
+    };
+    if (novoPreco !== produto.preco) {
+      delete atualizado.precoOriginal;
+      delete atualizado.desconto;
+    }
+    return atualizado;
+  });
+
+  fecharEdicao();
+  atualizarTela();
+  mostrarToast("Produto atualizado");
+});
+
+botaoCancelarEdicao.addEventListener("click", fecharEdicao);
+
+modalEditarFundo.addEventListener("click", (evento) => {
+  if (evento.target === modalEditarFundo) {
+    fecharEdicao();
+  }
+});
+
+document.addEventListener("keydown", (evento) => {
+  if (evento.key === "Escape") {
+    fecharEdicao();
+    modalTransferirFundo.hidden = true;
+  }
+});
+
+function abrirTransferencia(id) {
+  idTransferindo = id;
+  transferirDestino.innerHTML = "";
+  estoques
+    .filter((e) => e.id !== estoqueAtivoId)
+    .forEach((e) => {
+      transferirDestino.appendChild(new Option(e.nome, e.id));
+    });
+  modalTransferirFundo.hidden = false;
+}
+
+botaoCancelarTransferir.addEventListener("click", () => {
+  modalTransferirFundo.hidden = true;
+});
+
+botaoConfirmarTransferir.addEventListener("click", () => {
+  const destino = estoques.find(
+    (e) => e.id === Number(transferirDestino.value),
+  );
+  const produtoMovido = produtos.find((produto) => produto.id === idTransferindo);
+  if (!destino || !produtoMovido) {
+    return;
+  }
+
+  destino.produtos.push({ ...produtoMovido, id: destino.proximoId++ });
+  produtos = produtos.filter((produto) => produto.id !== idTransferindo);
+  modalTransferirFundo.hidden = true;
+  atualizarTela();
+  mostrarToast('"' + produtoMovido.nome + '" movido para ' + destino.nome);
+});
+
 listaProdutos.addEventListener("click", (evento) => {
   const botaoClicado = evento.target.closest("button[data-acao]");
   if (!botaoClicado) {

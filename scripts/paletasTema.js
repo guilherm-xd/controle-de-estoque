@@ -80,22 +80,22 @@ function mesmoFavorito(a, b) {
 }
 
 function favoritoAtual() {
-  var paleta = estadoTema.paleta;
+  let paleta = estadoTema.paleta;
   return paleta
     ? { tema: estadoTema.tema, modo: paleta.modo, cor: paleta.cor, hex: paleta.hex }
     : null;
 }
 
 function nomeFavorito(f) {
-  var nome = MODOS_PALETA[f.modo].nome + " · " + PALETAS_CORES[f.cor].nome + (f.hex ? " " + f.hex : "");
-  return f.tema === "classico" ? nome : nome + " · " + TEMAS[f.tema].nome;
+  let nome = modosPaleta[f.modo].nome + " · " + coresPaleta[f.cor].nome + (f.hex ? " " + f.hex : "");
+  return f.tema === "classico" ? nome : nome + " · " + temas[f.tema].nome;
 }
 
 function alternarFavorito() {
-  var atual = favoritoAtual();
+  let atual = favoritoAtual();
   if (!atual) return;
-  var lista = lerFavoritos();
-  var existe = lista.some(function (f) {
+  let lista = lerFavoritos();
+  let existe = lista.some(function (f) {
     return mesmoFavorito(f, atual);
   });
   salvarFavoritos(

@@ -91,7 +91,6 @@ function carregarEstoqueAtivo() {
   desarmarExclusao();
   renderizarAbas();
   atualizarTela();
-  animarEntrada();
 }
 
 function trocarEstoque(id) {

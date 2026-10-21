@@ -205,6 +205,9 @@ function renderizarLista() {
   resultadoFiltro.forEach((produto) => {
     listaProdutos.appendChild(criarLinha(produto));
   });
+  if (!barraDesconto.hidden) {
+    atualizarBarraDesconto();
+  }
   boasVindas.hidden = produtos.length > 0;
   estadoVazio.hidden =
     listaProdutos.children.length > 0 || produtos.length === 0;

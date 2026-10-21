@@ -93,7 +93,11 @@ function criarCelulaQuantidade(produto) {
 
 function criarLinha(produto) {
   const criarTR = document.createElement("tr");
-  criarTR.appendChild(criarCelula(produto.nome));
+  const tdNome = criarCelula(produto.nome);
+  if (modoSelecao()) {
+    tdNome.prepend(criarCaixaMarcar(produto.id));
+  }
+  criarTR.appendChild(tdNome);
   criarTR.appendChild(criarCelula(produto.categoria || "-"));
   criarTR.appendChild(criarCelulaQuantidade(produto));
   criarTR.appendChild(criarCelulaPreco(produto));

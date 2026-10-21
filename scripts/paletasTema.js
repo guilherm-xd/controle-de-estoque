@@ -41,8 +41,8 @@ function aplicarTema(tema) {
 }
 
 function aplicarPaleta(modo, cor, hex) {
-  if (!MODOS_PALETA[modo] || !PALETAS_CORES[cor]) return;
-  var personalizada = cor === "personalizada";
+  if (!modosPaleta[modo] || !coresPaleta[cor]) return;
+  let personalizada = cor === "personalizada";
   if (personalizada) {
     hex = hex || lerHexPersonalizado();
     ajustarPersonalizada(hex);

@@ -132,7 +132,14 @@ function carregarDados() {
 }
 
 function registrarEstado() {
-  const foto = JSON.stringify({ estoques, proximoIdEstoque });
+  const foto = JSON.stringify({
+    estoques: estoques.map((e) => {
+      const copia = { ...e };
+      delete copia.historico;
+      return copia;
+    }),
+    proximoIdEstoque,
+  });
 
   if (ultimoEstado && restaurando === false && foto !== ultimoEstado.foto) {
     pilhaDesfazer.push(ultimoEstado);

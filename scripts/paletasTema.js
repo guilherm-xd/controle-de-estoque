@@ -57,20 +57,18 @@ function aplicarPaleta(modo, cor, hex) {
 }
 
 function lerFavoritos() {
-  try {
-    var lista = JSON.parse(localStorage.getItem("temas-favoritos"));
-    if (!Array.isArray(lista)) return [];
-    return lista.filter(function (f) {
-      return (
-        TEMAS[f.tema] &&
-        MODOS_PALETA[f.modo] &&
-        PALETAS_CORES[f.cor] &&
-        (f.cor !== "personalizada" || /^#[0-9a-f]{6}$/i.test(f.hex || ""))
-      );
-    });
-  } catch (erro) {
+  const lista = JSON.parse(localStorage.getItem("temas-favoritos"));
+  if (!Array.isArray(lista)) {
     return [];
   }
+  return lista.filter(function (f) {
+    return (
+      temas[f.tema] &&
+      modosPaleta[f.modo] &&
+      coresPaleta[f.cor] &&
+      (f.cor !== "personalizada" || /^#[0-9a-f]{6}$/i.test(f.hex || ""))
+    );
+  });
 }
 
 function salvarFavoritos(lista) {

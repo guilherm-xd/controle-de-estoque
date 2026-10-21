@@ -138,7 +138,7 @@ function criarLinhaTema(
   linha.appendChild(botao);
 
   if (indiceRemover !== undefined) {
-    var remover = document.createElement("button");
+    let remover = document.createElement("button");
     remover.type = "button";
     remover.className = "removerFavorito";
     remover.dataset.remover = indiceRemover;

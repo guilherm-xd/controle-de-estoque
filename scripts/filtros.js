@@ -64,3 +64,19 @@ filtroCategoria.addEventListener("change", (nada) => {
   categoriaFiltro = filtroCategoria.value;
   renderizarLista();
 });
+
+botoesVisao.forEach((botao) => {
+  botao.addEventListener("click", () => {
+    painelLista.setAttribute("data-visao", botao.dataset.visao);
+    botoesVisao.forEach((b) => b.setAttribute("aria-pressed", b === botao));
+  });
+});
+
+alternadorGrafico.addEventListener("click", (evento) => {
+  const botao = evento.target.closest("[data-grafico]");
+  if (!botao) {
+    return;
+  }
+  estiloGrafico = botao.dataset.grafico;
+  renderizarGrafico();
+});

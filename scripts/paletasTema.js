@@ -222,21 +222,21 @@ function atualizarMenuTema() {
 }
 
 function montarMenuTema() {
-  var botaoMenu = document.getElementById("botaoTema");
-  var menu = document.getElementById("menuTema");
-  var listaTemas = document.getElementById("listaTemas");
-  var grupoModo = document.getElementById("grupoModo");
-  var grupoCores = document.getElementById("grupoCores");
-  var modoAtual = "escuro";
+  let botaoMenu = document.getElementById("botaoTema");
+  let menu = document.getElementById("menuTema");
+  let listaTemas = document.getElementById("listaTemas");
+  let grupoModo = document.getElementById("grupoModo");
+  let grupoCores = document.getElementById("grupoCores");
+  let modoAtual = "escuro";
 
-  ORDEM_CORES_PALETA.forEach(function (cor) {
-    var botao = document.createElement("button");
+  ordemPaletas.forEach(function (cor) {
+    let botao = document.createElement("button");
     botao.type = "button";
     botao.className = "opcaoCor";
     botao.dataset.cor = cor;
-    botao.title = PALETAS_CORES[cor].nome;
-    botao.setAttribute("aria-label", PALETAS_CORES[cor].nome);
-    botao.style.background = PALETAS_CORES[cor].acento;
+    botao.title = coresPaleta[cor].nome;
+    botao.setAttribute("aria-label", coresPaleta[cor].nome);
+    botao.style.background = coresPaleta[cor].acento;
     grupoCores.appendChild(botao);
   });
 

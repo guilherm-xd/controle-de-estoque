@@ -32,7 +32,7 @@ O objetivo principal foi praticar lógica de programação e desenvolvimento fro
 - **Duas visões da lista** - alterne entre tabela e cartões.
 - **Gráfico por categoria** - barras mostrando a quantidade de itens em cada categoria.
 - **Descontos em lote** - aplique um percentual em todos os itens, em itens específicos ou em uma categoria inteira, com preço original preservado e opção de remover o desconto individualmente ou de uma vez.
-- **Importação de arquivos** - suporte a `.csv`, `.xlsx` e `.xls`, inclusive planilhas com várias abas (cada aba vira um estoque).
+- **Importação de arquivos** - suporte a `.csv`, `.xlsx` e `.xls`; os produtos do arquivo são adicionados ao estoque que estiver aberto.
 - **Exportação de arquivos** - exporte o estoque atual ou todos os estoques em `.xlsx` ou `.csv`.
 - **Lista de reposição para impressão** - gera uma folha com os itens de estoque baixo e um campo para a quantidade a pedir.
 - **Barra lateral redimensionável** - arraste (ou use as setas do teclado) para ajustar a largura.
@@ -40,11 +40,11 @@ O objetivo principal foi praticar lógica de programação e desenvolvimento fro
 
 ---
 
-## Tecnologias Utilizadas
-
 - HTML
 - CSS
 - JavaScript
+- [SheetJS](https://sheetjs.com/) - leitura e geração de arquivos `.xlsx` e `.csv`
+
 ---
 
 ## Temas e Paletas de Cores
@@ -80,7 +80,7 @@ A escolha fica salva no navegador e é aplicada assim que a página abre.
 
 ### Formato para importação
 
-O arquivo precisa ter, no mínimo, as colunas **Produto** e **Quantidade**. As colunas **Categoria**, **Preço** e **Estoque** são opcionais. Se houver a coluna **Estoque**, os produtos são separados em estoques diferentes automaticamente.
+O arquivo precisa ter, no mínimo, as colunas **Produto** e **Quantidade**. As colunas **Categoria** e **Preço** são opcionais. Todos os produtos do arquivo são adicionados ao estoque atual, mesmo que o arquivo tenha várias abas ou a coluna **Estoque**.
 
 | Produto | Categoria | Quantidade | Preço (R$) |
 |---|---|---|---|

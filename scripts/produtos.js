@@ -28,6 +28,28 @@ const botaoConfirmarTransferir = document.getElementById(
 
 const botaoExemplo = document.getElementById("botaoExemplo");
 
+let ultimoRemovido = null;
+let timerAviso;
+
+const aviso = document.createElement("div");
+aviso.className = "avisoDesfazer";
+aviso.hidden = true;
+aviso.innerHTML = '<span></span><button type="button">Desfazer</button>';
+document.body.appendChild(aviso);
+
+const listaExemplos = [
+  ["Caixa de parafusos", "Ferragens", 42, 24.9],
+  ["Martelo 500g", "Ferramentas", 3, 39.9],
+  ["Furadeira de impacto", "Ferramentas", 8, 289],
+  ["Fita isolante", "Elétrica", 2, 6.5],
+  ["Lâmpada LED 9W", "Elétrica", 60, 12.9],
+  ["Tinta branca 3,6L", "Pintura", 14, 118],
+  ["Rolo de pintura", "Pintura", 0, 15.9],
+  ["Luva de proteção", "Segurança", 25, 9.9],
+  ["Capacete", "Segurança", 4, 34.5],
+  ["Trena 5m", "Ferramentas", 19, 22],
+];
+
 formularioProduto.addEventListener("submit", (fazer) => {
   fazer.preventDefault();
   const campoNomes = campoNome.value.trim();

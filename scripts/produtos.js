@@ -224,23 +224,83 @@ listaProdutos.addEventListener("click", (evento) => {
   }
   const idBotaoClicado = Number(botaoClicado.dataset.id);
 
+  if (botaoClicado.dataset.acao === "editar") {
+    abrirEdicao(idBotaoClicado);
+  }
+  if (botaoClicado.dataset.acao === "remover") {
+    removerProduto(idBotaoClicado);
+  }
+  if (botaoClicado.dataset.acao === "transferir") {
+    abrirTransferencia(idBotaoClicado);
+  }
+  if (botaoClicado.dataset.acao === "tirarDesconto") {
+    produtos = produtos.map((produto) => {
+      if (produto.id === idBotaoClicado) {
+        return tirarDesconto(produto);
+      }
+      return produto;
+    });
+    atualizarTela();
+    mostrarToast("Desconto removido");
+  }
   if (botaoClicado.dataset.acao === "mais") {
     const produtoClicado = produtos.find(
       (produto) => produto.id === idBotaoClicado,
     );
+    const antes = produtoClicado.quantidade;
     produtoClicado.quantidade = produtoClicado.quantidade + 1;
+    registrarHistorico(
+      produtoClicado.nome +
+        ": quantidade " +
+        antes +
+        " → " +
+        produtoClicado.quantidade,
+    );
     atualizarTela();
   }
   if (botaoClicado.dataset.acao === "menos") {
     const produtoClicado = produtos.find(
       (produto) => produto.id === idBotaoClicado,
     );
-    produtoClicado.quantidade = produtoClicado.quantidade - 1;
+    const antes = produtoClicado.quantidade;
+    produtoClicado.quantidade = Math.max(0, produtoClicado.quantidade - 1);
+    registrarHistorico(
+      produtoClicado.nome +
+        ": quantidade " +
+        antes +
+        " → " +
+        produtoClicado.quantidade,
+    );
     atualizarTela();
   }
-  if (botaoClicado.dataset.acao === "remover") {
-    produtos = produtos.filter((produto) => produto.id !== idBotaoClicado);
-    atualizarTela();
-    mostrarToast("Produto removido");
-  }
+});
+
+cabecalhosOrdenaveis.forEach((th) => {
+  th.addEventListener("click", () => {
+    const campo = th.dataset.campo;
+    if (ordem.campo === campo) {
+      ordem = { campo: campo, dir: -ordem.dir };
+    } else {
+      ordem = { campo: campo, dir: 1 };
+    }
+    cabecalhosOrdenaveis.forEach((outro) => {
+      delete outro.dataset.dir;
+    });
+    th.dataset.dir = ordem.dir;
+    renderizarLista();
+  });
+});
+
+botaoExemplo.addEventListener("click", () => {
+  listaExemplos.forEach((exemplo) => {
+    produtos.push({
+      id: proximoId++,
+      nome: exemplo[0],
+      categoria: exemplo[1],
+      quantidade: exemplo[2],
+      preco: exemplo[3],
+    });
+  });
+  atualizarTela();
+  mostrarToast(listaExemplos.length + " produtos de exemplo carregados");
 });

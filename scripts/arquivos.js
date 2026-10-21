@@ -3,7 +3,9 @@ const modalExportarFundo = document.getElementById("modalExportarFundo");
 const exportarFormato = document.getElementById("exportarFormato");
 const exportarEscopo = document.getElementById("exportarEscopo");
 const botaoCancelarExportar = document.getElementById("botaoCancelarExportar");
-const botaoConfirmarExportar = document.getElementById("botaoConfirmarExportar");
+const botaoConfirmarExportar = document.getElementById(
+  "botaoConfirmarExportar",
+);
 
 const botaoImportar = document.getElementById("botaoImportar");
 const arquivoImportar = document.getElementById("arquivoImportar");
@@ -14,24 +16,38 @@ function escaparCsv(valor) {
   const texto = String(valor);
   return /[";\n]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
 }
-const CABECALHO = ["Produto", "Categoria", "Quantidade", "Preço (R$)", "Status"];
+const CABECALHO = [
+  "Produto",
+  "Categoria",
+  "Quantidade",
+  "Preço (R$)",
+  "Status",
+];
 
 function statusDoProduto(p) {
-  return p.quantidade === 0 ? "Sem estoque" : estoqueBaixo(p) ? "Estoque baixo" : "Em estoque";
+  return p.quantidade === 0
+    ? "Sem estoque"
+    : estoqueBaixo(p)
+      ? "Estoque baixo"
+      : "Em estoque";
 }
 
 function linhasDe(lista, comoTexto) {
-  return lista.map(p => [
+  return lista.map((p) => [
     p.nome,
     p.categoria,
     p.quantidade,
     comoTexto ? p.preco.toFixed(2).replace(".", ",") : p.preco,
-    statusDoProduto(p)
+    statusDoProduto(p),
   ]);
 }
 
 function nomeDeAba(nome, usados) {
-  const base = nome.replace(/[\[\]:*?\/\\]/g, " ").trim().slice(0, 28) || "Estoque";
+  const base =
+    nome
+      .replace(/[\[\]:*?\/\\]/g, " ")
+      .trim()
+      .slice(0, 28) || "Estoque";
   let final = base;
   let i = 2;
   while (usados.includes(final)) final = `${base} ${i++}`;
@@ -56,18 +72,28 @@ function exportar() {
   if (exportarFormato.value === "xlsx") {
     const livro = XLSX.utils.book_new();
     const usados = [];
-    lista.forEach(e => {
-      const planilha = XLSX.utils.aoa_to_sheet([CABECALHO, ...linhasDe(e.produtos, false)]);
+    lista.forEach((e) => {
+      const planilha = XLSX.utils.aoa_to_sheet([
+        CABECALHO,
+        ...linhasDe(e.produtos, false),
+      ]);
       XLSX.utils.book_append_sheet(livro, planilha, nomeDeAba(e.nome, usados));
     });
     XLSX.writeFile(livro, `${nomeArquivo}.xlsx`);
   } else {
     const linhas = todos
-      ? lista.flatMap(e => linhasDe(e.produtos, true).map(l => [e.nome, ...l]))
+      ? lista.flatMap((e) =>
+          linhasDe(e.produtos, true).map((l) => [e.nome, ...l]),
+        )
       : linhasDe(lista[0].produtos, true);
     const cabecalho = todos ? ["Estoque", ...CABECALHO] : CABECALHO;
-    const csv = [cabecalho, ...linhas].map(l => l.map(escaparCsv).join(";")).join("\r\n");
-    baixarArquivo(new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" }), `${nomeArquivo}.csv`);
+    const csv = [cabecalho, ...linhas]
+      .map((l) => l.map(escaparCsv).join(";"))
+      .join("\r\n");
+    baixarArquivo(
+      new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" }),
+      `${nomeArquivo}.csv`,
+    );
   }
   modalExportarFundo.hidden = true;
   mostrarToast("Arquivo exportado", false);
@@ -76,21 +102,34 @@ function exportar() {
 document.getElementById("botaoExportar").addEventListener("click", () => {
   modalExportarFundo.hidden = false;
 });
-document.getElementById("botaoCancelarExportar").addEventListener("click", () => {
-  modalExportarFundo.hidden = true;
-});
-document.getElementById("botaoConfirmarExportar").addEventListener("click", exportar);
+document
+  .getElementById("botaoCancelarExportar")
+  .addEventListener("click", () => {
+    modalExportarFundo.hidden = true;
+  });
+document
+  .getElementById("botaoConfirmarExportar")
+  .addEventListener("click", exportar);
 
 document.getElementById("botaoReposicao").addEventListener("click", () => {
-  const faltando = produtos.filter(estoqueBaixo).sort((a, b) => a.quantidade - b.quantidade);
-  const linhas = faltando.map(p => `<tr><td>${p.nome.replace(/</g, "&lt;")}</td><td>${(p.categoria || "-").replace(/</g, "&lt;")}</td><td>${p.quantidade}</td><td></td></tr>`).join("");
+  const faltando = produtos
+    .filter(estoqueBaixo)
+    .sort((a, b) => a.quantidade - b.quantidade);
+  const linhas = faltando
+    .map(
+      (p) =>
+        `<tr><td>${p.nome.replace(/</g, "&lt;")}</td><td>${(p.categoria || "-").replace(/</g, "&lt;")}</td><td>${p.quantidade}</td><td></td></tr>`,
+    )
+    .join("");
 
   areaImpressao.innerHTML = `
     <h1>Lista de reposição</h1>
     <p>${estoqueAtivo().nome.replace(/</g, "&lt;")} - ${new Date().toLocaleDateString("pt-BR")}</p>
-    ${faltando.length === 0
-      ? "<p>Nenhum item com estoque baixo.</p>"
-      : `<table><thead><tr><th>Produto</th><th>Categoria</th><th>Em estoque</th><th>Quantidade a pedir</th></tr></thead><tbody>${linhas}</tbody></table>`}`;
+    ${
+      faltando.length === 0
+        ? "<p>Nenhum item com estoque baixo.</p>"
+        : `<table><thead><tr><th>Produto</th><th>Categoria</th><th>Em estoque</th><th>Quantidade a pedir</th></tr></thead><tbody>${linhas}</tbody></table>`
+    }`;
   window.print();
 });
 
@@ -105,12 +144,16 @@ function lerCsv(texto) {
   for (let i = 0; i < limpo.length; i++) {
     const c = limpo[i];
     if (aspas) {
-      if (c === '"' && limpo[i + 1] === '"') { campo += '"'; i++; }
-      else if (c === '"') aspas = false;
+      if (c === '"' && limpo[i + 1] === '"') {
+        campo += '"';
+        i++;
+      } else if (c === '"') aspas = false;
       else campo += c;
     } else if (c === '"') aspas = true;
-    else if (c === separador) { linha.push(campo); campo = ""; }
-    else if (c === "\n" || c === "\r") {
+    else if (c === separador) {
+      linha.push(campo);
+      campo = "";
+    } else if (c === "\n" || c === "\r") {
       if (c === "\r" && limpo[i + 1] === "\n") i++;
       linha.push(campo);
       linhas.push(linha);
@@ -118,28 +161,39 @@ function lerCsv(texto) {
       campo = "";
     } else campo += c;
   }
-  if (campo !== "" || linha.length) { linha.push(campo); linhas.push(linha); }
+  if (campo !== "" || linha.length) {
+    linha.push(campo);
+    linhas.push(linha);
+  }
   return linhas;
 }
 
 function agruparProdutos(linhas, nomePadrao) {
-  const cabecalho = linhas[0].map(c => String(c).trim().toLowerCase());
-  const col = texto => cabecalho.findIndex(c => c.startsWith(texto));
-  const i = { estoque: col("estoque"), nome: col("produto"), categoria: col("categoria"), quantidade: col("quantidade"), preco: col("preço") };
+  const cabecalho = linhas[0].map((c) => String(c).trim().toLowerCase());
+  const col = (texto) => cabecalho.findIndex((c) => c.startsWith(texto));
+  const i = {
+    estoque: col("estoque"),
+    nome: col("produto"),
+    categoria: col("categoria"),
+    quantidade: col("quantidade"),
+    preco: col("preço"),
+  };
   const grupos = {};
 
   if (i.nome < 0 || i.quantidade < 0) return grupos;
 
-  linhas.slice(1)
-    .filter(l => String(l[i.nome] ?? "").trim() !== "")
-    .forEach(l => {
-      const nomeEstoque = i.estoque >= 0 ? String(l[i.estoque]).trim() || nomePadrao : nomePadrao;
+  linhas
+    .slice(1)
+    .filter((l) => String(l[i.nome] ?? "").trim() !== "")
+    .forEach((l) => {
+      const nomeEstoque =
+        i.estoque >= 0 ? String(l[i.estoque]).trim() || nomePadrao : nomePadrao;
       if (!grupos[nomeEstoque]) grupos[nomeEstoque] = [];
       grupos[nomeEstoque].push({
         nome: String(l[i.nome]).trim(),
         categoria: i.categoria >= 0 ? String(l[i.categoria] ?? "").trim() : "",
         quantidade: Math.max(0, parseInt(l[i.quantidade]) || 0),
-        preco: parseFloat(String(l[i.preco] ?? 0).replace(",", ".")) || 0
+        preco: parseFloat(String(l[i.preco] ?? 0).replace(",", ".")) || 0,
       });
     });
 
@@ -152,8 +206,10 @@ async function importarArquivo(arquivo) {
 
   if (/\.xlsx?$/i.test(arquivo.name)) {
     const livro = XLSX.read(await arquivo.arrayBuffer());
-    livro.SheetNames.forEach(nome => {
-      const linhas = XLSX.utils.sheet_to_json(livro.Sheets[nome], { header: 1 });
+    livro.SheetNames.forEach((nome) => {
+      const linhas = XLSX.utils.sheet_to_json(livro.Sheets[nome], {
+        header: 1,
+      });
       if (linhas.length) Object.assign(grupos, agruparProdutos(linhas, nome));
     });
   } else {
@@ -167,26 +223,23 @@ async function importarArquivo(arquivo) {
     return;
   }
 
-  estoqueAtivo().produtos = produtos;
-  estoqueAtivo().proximoId = proximoId;
+  const importados = nomes.flatMap((nome) => grupos[nome]);
+  importados.forEach((p) => produtos.push({ ...p, id: proximoId++ }));
 
-  let ultimoId;
-  nomes.forEach(nome => {
-    ultimoId = proximoIdEstoque++;
-    estoques.push({
-      id: ultimoId,
-      nome,
-      produtos: grupos[nome].map((p, indice) => ({ ...p, id: indice + 1 })),
-      proximoId: grupos[nome].length + 1
-    });
-  });
-
-  estoqueAtivoId = ultimoId;
-  carregarEstoqueAtivo();
-  mostrarToast(nomes.length === 1 ? "Estoque importado" : `${nomes.length} estoques importados`);
+  registrarHistorico(
+    `${importados.length} produtos importados de ${arquivo.name}`,
+  );
+  atualizarTela();
+  mostrarToast(
+    importados.length === 1
+      ? "Produto importado"
+      : `${importados.length} produtos importados`,
+  );
 }
 
-document.getElementById("botaoImportar").addEventListener("click", () => arquivoImportar.click());
+document
+  .getElementById("botaoImportar")
+  .addEventListener("click", () => arquivoImportar.click());
 
 arquivoImportar.addEventListener("change", () => {
   if (arquivoImportar.files[0]) importarArquivo(arquivoImportar.files[0]);

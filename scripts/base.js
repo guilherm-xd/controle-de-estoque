@@ -155,5 +155,6 @@ function registrarEstado() {
 function atualizarTela() {
   renderizarLista();
   atualizarIndicadores();
+  renderizarGrafico();
   salvarDados();
 }

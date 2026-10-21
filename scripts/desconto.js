@@ -139,18 +139,77 @@ function aplicarDesconto() {
     };
   });
 
-  barraDesconto.hidden = true;
-  campoDesconto.value = "";
+  reiniciarDesconto();
   atualizarTela();
   mostrarToast(
     "Desconto de " +
       formatarPercentual(valorCampoDesconto) +
       "% aplicado em " +
-      produtos.length +
-      " itens",
+      afetados +
+      (afetados === 1 ? " item" : " itens"),
   );
 }
 
+function tirarDesconto(produto) {
+  if (!produto.desconto) {
+    return produto;
+  }
+  const semDesconto = { ...produto, preco: produto.precoOriginal };
+  delete semDesconto.precoOriginal;
+  delete semDesconto.desconto;
+  return semDesconto;
+}
+
+botaoDesconto.addEventListener("click", () => {
+  if (barraDesconto.hidden) {
+    abrirBarraDesconto();
+  } else {
+    fecharBarraDesconto();
+  }
+});
+
+botaoDesfazerDescontos.addEventListener("click", () => {
+  produtos = produtos.map(tirarDesconto);
+  atualizarTela();
+  mostrarToast("Todos os descontos foram removidos");
+});
+
+botaoCancelarDesconto.addEventListener("click", fecharBarraDesconto);
 botaoAplicarDesconto.addEventListener("click", aplicarDesconto);
 
+opcoesAlvoDesconto.forEach((opcao) => {
+  opcao.addEventListener("change", () => {
+    atualizarBarraDesconto();
+    renderizarLista();
+  });
+});
 
+seletorCategoriaDesconto.addEventListener("change", atualizarBarraDesconto);
+
+botaoMarcarTodos.addEventListener("click", () => {
+  const visiveis = filtrarProdutos();
+  const todosMarcados = visiveis.every((p) => idsMarcados.has(p.id));
+  visiveis.forEach((p) => {
+    if (todosMarcados) {
+      idsMarcados.delete(p.id);
+    } else {
+      idsMarcados.add(p.id);
+    }
+  });
+  atualizarBarraDesconto();
+  renderizarLista();
+});
+
+listaProdutos.addEventListener("change", (evento) => {
+  const caixa = evento.target.closest("input.caixaMarcar");
+  if (!caixa) {
+    return;
+  }
+  const id = Number(caixa.dataset.id);
+  if (caixa.checked) {
+    idsMarcados.add(id);
+  } else {
+    idsMarcados.delete(id);
+  }
+  atualizarBarraDesconto();
+});

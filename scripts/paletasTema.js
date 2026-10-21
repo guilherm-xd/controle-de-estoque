@@ -30,7 +30,7 @@ function ligarElementos() {
 
 document.addEventListener("DOMContentLoaded", ligarElementos);
 function aplicarTema(tema) {
-  if (!TEMAS[tema]) tema = "classico";
+  if (!temas[tema]) tema = "classico";
   limparPaleta();
   document.getElementById("linkTema").href = "styles/tema-" + tema + ".css";
   estadoTema = { tema: tema, paleta: null };

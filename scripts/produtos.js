@@ -38,8 +38,36 @@ formularioProduto.addEventListener("submit", (fazer) => {
     quantidade: Number(campoQuantidade.value),
     preco: Number(campoPreco.value) || 0,
   });
-  formularioProduto.reset()
-  campoNome.focus()
-  atualizarTela()
-  mostrarToast('"' + campoNomes + '" ' + "adicionado ao estoque")
+  formularioProduto.reset();
+  campoNome.focus();
+  atualizarTela();
+  mostrarToast('"' + campoNomes + '" ' + "adicionado ao estoque");
+});
+
+listaProdutos.addEventListener("click", (evento) => {
+  const botaoClicado = evento.target.closest("button[data-acao]");
+  if (!botaoClicado) {
+    return;
+  }
+  const idBotaoClicado = Number(botaoClicado.dataset.id);
+
+  if (botaoClicado.dataset.acao === "mais") {
+    const produtoClicado = produtos.find(
+      (produto) => produto.id === idBotaoClicado,
+    );
+    produtoClicado.quantidade = produtoClicado.quantidade + 1;
+    atualizarTela();
+  }
+  if (botaoClicado.dataset.acao === "menos") {
+    const produtoClicado = produtos.find(
+      (produto) => produto.id === idBotaoClicado,
+    );
+    produtoClicado.quantidade = produtoClicado.quantidade - 1;
+    atualizarTela();
+  }
+  if (botaoClicado.dataset.acao === "remover") {
+    produtos = produtos.filter((produto) => produto.id !== idBotaoClicado);
+    atualizarTela();
+    mostrarToast("Produto removido");
+  }
 });

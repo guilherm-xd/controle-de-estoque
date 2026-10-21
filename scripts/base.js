@@ -91,6 +91,7 @@ function registrarHistorico(texto) {
   if (estoque.historico.length > 100) {
     estoque.historico.pop();
   }
+  salvarDados();
 }
 
 function salvarDados() {

@@ -52,46 +52,45 @@ function ajustarPersonalizada(hex) {
 }
 
 function lerHexPersonalizado() {
-  try {
-    var hex = localStorage.getItem("paleta-hex");
-    if (/^#[0-9a-f]{6}$/i.test(hex || "")) return hex;
-  } catch (erro) {}
+  const hex = localStorage.getItem("paleta-hex");
+  if (/^#[0-9a-f]{6}$/i.test(hex || "")) {
+    return hex;
+  }
   return "#8833ff";
 }
 
 function guardar(chave, valor) {
-  try {
-    if (valor === null) localStorage.removeItem(chave);
-    else localStorage.setItem(chave, valor);
-  } catch (erro) {}
+  if (valor === null) {
+    localStorage.removeItem(chave);
+  } else {
+    localStorage.setItem(chave, valor);
+  }
 }
 
 function definirVars(vars) {
-  var raiz = document.documentElement;
-  varsDaPaleta = Object.keys(vars);
-  varsDaPaleta.forEach(function (prop) {
+  varPaleta = Object.keys(vars);
+  varPaleta.forEach(function (prop) {
     raiz.style.setProperty(prop, vars[prop]);
   });
 }
 
 function limparPaleta() {
-  var raiz = document.documentElement;
-  varsDaPaleta.forEach(function (prop) {
+  varPaleta.forEach(function (prop) {
     raiz.style.removeProperty(prop);
   });
   raiz.style.removeProperty("color-scheme");
-  varsDaPaleta = [];
+  varPaleta = [];
 }
 
 function calcularPaleta(modo, cor) {
-  var c = PALETAS_CORES[cor];
-  var escuro = modo === "escuro";
-  var acento = c.acento;
-  var m = MODOS_PALETA[modo];
-  var fundo, superficie, borda, campo, hover;
+  let c = coresPaleta[cor];
+  let escuro = modo === "escuro";
+  let acento = c.acento;
+  let m = modosPaleta[modo];
+  let fundo, superficie, borda, campo, hover;
 
   if (escuro) {
-    var f = PALETAS_FUNDOS.escuro[cor];
+    let f = fundosPaleta.escuro[cor];
     fundo = f[0];
     superficie = f[1];
     borda = f[2];

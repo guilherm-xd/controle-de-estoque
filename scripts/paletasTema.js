@@ -151,25 +151,25 @@ function criarLinhaTema(
 }
 
 function atualizarMenuTema() {
-  var nome = document.getElementById("nomeTema");
+  let nome = document.getElementById("nomeTema");
   if (!nome) return;
-  var paleta = estadoTema.paleta;
-  var atual = favoritoAtual();
-  var favoritos = lerFavoritos();
-  var lista = document.getElementById("listaTemas");
-  var cor = paleta
-    ? PALETAS_CORES[paleta.cor].acento
-    : TEMAS[estadoTema.tema].cor;
+  let paleta = estadoTema.paleta;
+  let atual = favoritoAtual();
+  let favoritos = lerFavoritos();
+  let lista = document.getElementById("listaTemas");
+  let cor = paleta
+    ? coresPaleta[paleta.cor].acento
+    : temas[estadoTema.tema].cor;
 
-  nome.textContent = atual ? nomeFavorito(atual) : TEMAS[estadoTema.tema].nome;
+  nome.textContent = atual ? nomeFavorito(atual) : temas[estadoTema.tema].nome;
   document.getElementById("amostraTema").style.background = cor;
 
   lista.innerHTML = "";
-  Object.keys(TEMAS).forEach(function (chave) {
+  Object.keys(temas).forEach(function (chave) {
     lista.appendChild(
       criarLinhaTema(
-        TEMAS[chave].nome,
-        TEMAS[chave].cor,
+        temas[chave].nome,
+        temas[chave].cor,
         "tema",
         chave,
         !paleta && chave === estadoTema.tema,

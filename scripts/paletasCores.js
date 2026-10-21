@@ -1,12 +1,12 @@
 const raiz = document.documentElement;
 function hexParaRgb(hex) {
-  var n = parseInt(hex.slice(1), 16);
+  let n = parseInt(hex.slice(1), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
 function misturar(a, b, t) {
-  var x = hexParaRgb(a);
-  var y = hexParaRgb(b);
+  let x = hexParaRgb(a);
+  let y = hexParaRgb(b);
   return (
     "#" +
     x

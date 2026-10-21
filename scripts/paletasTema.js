@@ -180,7 +180,7 @@ function atualizarMenuTema() {
     lista.appendChild(
       criarLinhaTema(
         nomeFavorito(f),
-        (f.hex || PALETAS_CORES[f.cor].acento),
+        (f.hex || coresPaleta[f.cor].acento),
         "favorito",
         i,
         !!atual && mesmoFavorito(f, atual),

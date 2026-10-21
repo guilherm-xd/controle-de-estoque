@@ -246,43 +246,43 @@ function montarMenuTema() {
   }
 
   botaoMenu.addEventListener("click", function () {
-    var abrir = menu.hidden;
+    let abrir = menu.hidden;
     menu.hidden = !abrir;
     botaoMenu.setAttribute("aria-expanded", String(abrir));
   });
 
   listaTemas.addEventListener("click", function (evento) {
-    var remover = evento.target.closest("[data-remover]");
+    let remover = evento.target.closest("[data-remover]");
     if (remover) {
-      var favoritos = lerFavoritos();
+      let favoritos = lerFavoritos();
       favoritos.splice(Number(remover.dataset.remover), 1);
       salvarFavoritos(favoritos);
       atualizarMenuTema();
       return;
     }
-    var favorito = evento.target.closest("[data-favorito]");
+    let favorito = evento.target.closest("[data-favorito]");
     if (favorito) {
       aplicarFavorito(lerFavoritos()[Number(favorito.dataset.favorito)]);
       fechar();
       return;
     }
-    var botao = evento.target.closest("[data-tema]");
+    let botao = evento.target.closest("[data-tema]");
     if (!botao) return;
     aplicarTema(botao.dataset.tema);
     fechar();
   });
 
-  var campoCor = document.getElementById("campoCorPersonalizada");
+  let campoCor = document.getElementById("campoCorPersonalizada");
   document
     .getElementById("botaoPersonalizada")
     .addEventListener("click", function () {
-      var p = estadoTema.paleta;
-      campoCor.value = p ? PALETAS_CORES[p.cor].acento : lerHexPersonalizado();
+      let p = estadoTema.paleta;
+      campoCor.value = p ? coresPaleta[p.cor].acento : lerHexPersonalizado();
       if (campoCor.showPicker) campoCor.showPicker();
       else campoCor.click();
     });
   campoCor.addEventListener("input", function () {
-    var modo = estadoTema.paleta ? estadoTema.paleta.modo : modoAtual;
+    let modo = estadoTema.paleta ? estadoTema.paleta.modo : modoAtual;
     aplicarPaleta(modo, "personalizada", campoCor.value);
   });
 

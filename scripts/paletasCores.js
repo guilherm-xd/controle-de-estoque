@@ -104,9 +104,9 @@ function calcularPaleta(modo, cor) {
     hover = misturar(acento, "#ffffff", 0.95);
   }
 
-  var lateral = misturar(dessaturar(acento, 0.3), "#000000", escuro ? 0.66 : 0.58);
-  var perigo = escuro ? "#c93a32" : "#b3261e";
-  var ok = "#39b36f";
+  let lateral = misturar(dessaturar(acento, 0.3), "#000000", escuro ? 0.66 : 0.58);
+  let perigo = escuro ? "#c93a32" : "#b3261e";
+  let ok = "#39b36f";
 
   return {
     "--corFundo": fundo,

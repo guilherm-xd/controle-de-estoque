@@ -121,10 +121,10 @@ function criarLinhaTema(
   pressionado,
   indiceRemover,
 ) {
-  var linha = document.createElement("div");
-  var botao = document.createElement("button");
-  var amostra = document.createElement("span");
-  var texto = document.createElement("span");
+  let linha = document.createElement("div");
+  let botao = document.createElement("button");
+  let amostra = document.createElement("span");
+  let texto = document.createElement("span");
 
   linha.className = "linhaTema";
   botao.type = "button";

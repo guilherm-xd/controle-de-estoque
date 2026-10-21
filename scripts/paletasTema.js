@@ -291,17 +291,17 @@ function montarMenuTema() {
     .addEventListener("click", alternarFavorito);
 
   grupoModo.addEventListener("click", function (evento) {
-    var botao = evento.target.closest("[data-modo]");
+    let botao = evento.target.closest("[data-modo]");
     if (!botao) return;
     modoAtual = botao.dataset.modo;
-    var cor = estadoTema.paleta ? estadoTema.paleta.cor : "verde";
+    let cor = estadoTema.paleta ? estadoTema.paleta.cor : "verde";
     aplicarPaleta(modoAtual, cor);
   });
 
   grupoCores.addEventListener("click", function (evento) {
-    var botao = evento.target.closest("[data-cor]");
+    let botao = evento.target.closest("[data-cor]");
     if (!botao) return;
-    var modo = estadoTema.paleta ? estadoTema.paleta.modo : modoAtual;
+    let modo = estadoTema.paleta ? estadoTema.paleta.modo : modoAtual;
     aplicarPaleta(modo, botao.dataset.cor);
   });
 

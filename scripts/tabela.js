@@ -226,6 +226,7 @@ function atualizarIndicadores() {
       0,
     ),
   );
+  botaoDesfazerDescontos.hidden = !produtos.some((p) => p.desconto);
 }
 
 function criarBotaoEditar(id) {

@@ -115,7 +115,21 @@ function aplicarDesconto() {
     return;
   }
 
+  if (!produtos.some(entraNoDesconto)) {
+    if (alvo === "categoria") {
+      resumoDesconto.textContent = "Nenhum produto nessa categoria";
+    } else {
+      resumoDesconto.textContent = "Marque pelo menos um item";
+    }
+    return;
+  }
+
+  const afetados = produtos.filter(entraNoDesconto).length;
+
   produtos = produtos.map((produto) => {
+    if (!entraNoDesconto(produto)) {
+      return produto;
+    }
     const precoBase = produto.precoOriginal || produto.preco;
     return {
       ...produto,

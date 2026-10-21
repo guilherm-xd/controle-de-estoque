@@ -242,10 +242,11 @@ function criarBotaoEditar(id) {
 
 function criarBotaoDeletar(id) {
   const botaoDeletar = document.createElement("button");
-  botaoDeletar.className = "botaoIcone botaoRemover";
+  const armado = id === idParaRemover;
+  botaoDeletar.className = "botaoIcone botaoRemover" + (armado ? " armado" : "");
   botaoDeletar.innerHTML = iconeDelete;
-  botaoDeletar.dataset.dica = "Remover";
-  botaoDeletar.setAttribute("aria-label", "Remover");
+  botaoDeletar.dataset.dica = armado ? "Tem certeza? Clique de novo" : "Remover";
+  botaoDeletar.setAttribute("aria-label", botaoDeletar.dataset.dica);
   botaoDeletar.dataset.acao = "remover";
   botaoDeletar.dataset.id = id;
   return botaoDeletar;
